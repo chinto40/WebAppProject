@@ -1,8 +1,8 @@
 const mysql = require('mysql');
 const Promise = require('promise')
+const Q = require('Q');
 
-
-
+console.log('before host')
 const con = mysql.createConnection({
     //host: 'http://136.50.22.117:80/phpmyadmin/index.php',
     //host: "http://136.50.22.117:80/phpmyadmin/db_structure.php?server=1&db=school",
@@ -12,15 +12,15 @@ const con = mysql.createConnection({
     database: 'school',
     port: '3306'
 });
-
-// con.connect((err) =>{
-//     if(err){
-//         console.log('Error connecting to DB: ' + err);
-//         return;
-//     }
-//     console.log('Connection Successful');
-// });
-
+console.log('after the host')
+con.connect((err) =>{
+    if(err){
+        console.log('Error connecting to DB: ' + err);
+        return;
+    }
+    console.log('Connection Successful');
+});
+console.log('After the connection')
 //In case i need a function to connect...
 const DBConnect = () =>{
     con.connect((err) =>{
@@ -35,51 +35,50 @@ const DBConnect = () =>{
 /**************************************
     Reading From the Database 
 ****************************************/ 
-
+console.log('Before the first query')
 // reading in from the database..
-// con.query('Select * From users',(err, data) =>{
-//     if(err){
-//         console.log('Error: ' + err);
-//         throw err;
-//     }
-//    /// console.log(data[0].UserID); // how to parse data
-//    console.log(data[0]);
-// })
+con.query('Select * From users',(err, data) =>{
+    if(err){
+        console.log('Error: ' + err);
+        throw err;
+    }
+   /// console.log(data[0].UserID); // how to parse data
+   console.log(data[0]);
+})
 exports.Auth = false;
 
 // Authenticating User from the Database... **********************************************
  module.exports.readAuthUser = (username, password) =>{
     let result = false;
-    let r = false;
-     
-         con.query('Select UserLogin, UserPassword FROM users',(err ,data)=>{
-        
+    let def = Q.defer(); // using q to defer a promise.. 
+        let prom = Q.Promise((resolve, reject)=>{
+            con.query('Select UserLogin, UserPassword FROM users',(err ,data)=>{
         if(err){
             console.log('Error: ' + err);
             throw err;
         }
         console.log('in the middle' + password);
         let i =0;
-        r = false;
+        result = false;
         data.forEach(element => {
             console.log(data[i].UserLogin + ' : ' + data[i].UserPassword + ', ' + username + ':' + password);
             if(username === data[i].UserLogin && password === data[i].UserPassword){
                 console.log('true-true');
-                 r = true;
+                result = true;
+               // resolve(result);
                  auth = true;
             }
            i++;
         });
         TheEnd();
+        def.resolve(result);
         console.log('inner Results: '+ r);
         
-    })
-   
+    });
+   });
+  
     console.log('out Results: '+ result);
-    result = r;
-    return result,console.log('Error')
-
-
+    return def.prom;
 };
 
 /**************************************
@@ -120,6 +119,9 @@ const UpdateLastNameValues = (userID, ColName, val)=>{
     Delete Function for the Database 
 ****************************************/ 
 
+con.end = ()=>{
+
+}
 
 /******************
  * Connection Ending

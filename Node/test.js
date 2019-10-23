@@ -4,16 +4,12 @@
 const DB = require('./DataManipulation.js');
 const mysql = require('mysql')
 const prom = require('promise');
-
- function jack () { 
-    
-    const t =  DB.readAuthUser('xtd781','password')
-    if(row){
-        console.log('In Test: true');
-    }else{
-        console.log('In test: false');
-    }
-    console.log("No promise herer")
-   
+ 
+const row =  DB.readAuthUser('xtd781','password')
+if(row){
+    console.log('In Test: true');
+}else{
+    console.log('In test: false');
+    console.log("No promise herer");
 }
-jack();
+
