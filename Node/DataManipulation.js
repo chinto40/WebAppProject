@@ -2,7 +2,6 @@ const mysql = require('mysql');
 const Promise = require('promise')
 const Q = require('Q');
 
-console.log('before host')
 const con = mysql.createConnection({
     //host: 'http://136.50.22.117:80/phpmyadmin/index.php',
     //host: "http://136.50.22.117:80/phpmyadmin/db_structure.php?server=1&db=school",
@@ -12,15 +11,15 @@ const con = mysql.createConnection({
     database: 'school',
     port: '3306'
 });
-console.log('after the host')
-con.connect((err) =>{
-    if(err){
-        console.log('Error connecting to DB: ' + err);
-        return;
-    }
-    console.log('Connection Successful');
-});
-console.log('After the connection')
+
+// con.connect((err) =>{
+//     if(err){
+//         console.log('Error connecting to DB: ' + err);
+//         return;
+//     }
+//     console.log('Connection Successful');
+// });
+
 //In case i need a function to connect...
 const DBConnect = () =>{
     con.connect((err) =>{
@@ -35,7 +34,7 @@ const DBConnect = () =>{
 /**************************************
     Reading From the Database 
 ****************************************/ 
-console.log('Before the first query')
+
 // reading in from the database..
 con.query('Select * From users',(err, data) =>{
     if(err){
@@ -65,18 +64,14 @@ exports.Auth = false;
             if(username === data[i].UserLogin && password === data[i].UserPassword){
                 console.log('true-true');
                 result = true;
-               // resolve(result);
-                 auth = true;
             }
            i++;
         });
-        TheEnd();
-        def.resolve(result);
-        console.log('inner Results: '+ r);
-        
+        console.log('inner Results: '+ result);
+         resolve(result);
     });
    });
-  
+  TheEnd();
     console.log('out Results: '+ result);
     return def.prom;
 };
@@ -119,9 +114,18 @@ const UpdateLastNameValues = (userID, ColName, val)=>{
     Delete Function for the Database 
 ****************************************/ 
 
-con.end = ()=>{
 
-}
+/****
+ * To Stop Hanging when running this Node DataManipulation we need to close the connection.
+ * When Running this file Uncomment this function. 
+ */
+// con.end((err) =>{
+// }) 
+
+
+
+
+
 
 /******************
  * Connection Ending
