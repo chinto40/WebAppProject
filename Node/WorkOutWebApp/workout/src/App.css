@@ -1,9 +1,11 @@
 .App {
   text-align: center;
+  background-color: #ccff99;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 10vmin;
+  margin-right: 4vmin; 
 }
 
 .App-header {
@@ -14,7 +16,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #dbffb3;
 }
 
 .App-link {
