@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import MenuBar from "./components/home_page/menu_bar";
 import "./App.css";
+import MenuBar from "./components/home_page/menu_bar";
+import { Container } from "@material-ui/core";
 
 class App extends Component {
   state = {};
@@ -63,20 +64,23 @@ class App extends Component {
     console.log("****State is: " + this.state);
     return (
       <div className="App">
-        <header className="App-header">
+        <Container maxWidth="lg">
           <MenuBar />
-          <p>The State is: => {this.state.data} End</p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <button onClick={this.buttonOnAction}>Click Me!!!</button>
-          <p> </p>
-        </header>
+          <header className="App-header">
+            <p>Get Started Today</p>
+            <p>The State is: => {this.state.data} End</p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Learn React
+            </a>
+            <button onClick={this.buttonOnAction}>Click Me!!!</button>
+            <p> </p>
+          </header>
+        </Container>
       </div>
     );
   }

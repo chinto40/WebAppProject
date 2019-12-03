@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: #ccff99;
+  background-color: #47443B;
 }
 
 .App-logo {
@@ -8,15 +8,22 @@
   margin-right: 4vmin; 
 }
 
+.App-image {
+  height: 80vmin;
+  margin-right: 4vmin; 
+}
+
 .App-header {
-  background-color: #282c34;
+  background-color: #47443B;
+  background-image: url("./components/images/landing_page_1.jpg");
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #dbffb3;
+  color: white;
 }
 
 .App-link {

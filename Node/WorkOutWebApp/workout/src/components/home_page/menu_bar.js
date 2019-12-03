@@ -5,23 +5,26 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import logo from "../images/fit_life.gif";
+import logo from "../images/fit_life.png";
+import { textAlign } from "@material-ui/system";
 
 const useStyles = makeStyles(theme => ({
   menu: {
-    backgroundColor: (theme.color = "#ccf0a3")
+    backgroundColor: (theme.color = "#8ABD00")
   },
   root: {
     flexGrow: 1
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    color: "#47443B"
   },
   title: {
     flexGrow: 1
   },
   button: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    WebkitTextFillColor: (theme.color = "#47443B")
   }
 }));
 
@@ -35,19 +38,18 @@ const MenuBar = () => {
           <IconButton
             edge="start"
             className={classes.menuButton}
-            color="inherit"
             aria-label="menu"
           >
             <MenuIcon />
           </IconButton>
           <img src={logo} className="App-logo" alt="logo" />
-          <Button className={classes.button} color="inherit">
+          <Button className={classes.button} color="#47443B">
             Workouts
           </Button>
-          <Button className={classes.button} color="inherit">
+          <Button className={classes.button} color="#47443B">
             Meal Plans
           </Button>
-          <Button className={classes.button} color="inherit">
+          <Button className={classes.button} color="#47443B">
             Login
           </Button>
         </Toolbar>
