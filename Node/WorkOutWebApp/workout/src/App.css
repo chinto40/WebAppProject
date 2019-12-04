@@ -1,13 +1,22 @@
 .App {
   text-align: center;
+  background-color: #47443B;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 10vmin;
+  margin-right: 4vmin; 
+}
+
+.App-image {
+  height: 80vmin;
+  margin-right: 4vmin; 
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #47443B;
+  background-image: url("./components/images/landing_page_1.jpg");
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
