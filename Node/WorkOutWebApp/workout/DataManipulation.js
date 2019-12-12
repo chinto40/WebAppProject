@@ -1,7 +1,8 @@
 const mysql = require('mysql');
 const Promise = require('promise')
 const Q = require('Q');
-
+let express = require('express')
+let router = express.Router()
 
 
 
@@ -68,7 +69,7 @@ con.query('Select * From users',(err, data) =>{
 exports.Auth = false;
 console.log('\n**Database is outside: '+ con.state);
 // Authenticating User from the Database... **********************************************
- module.exports.readAuthUser = (username, password) =>{
+ this.router.readAuthUser = (username, password) =>{
     let result = false;
     let def =  Q.defer(); // using q to defer a promise.. 
         let prom = Q.Promise((resolve, reject)=>{
@@ -167,3 +168,5 @@ const TheEnd = ()=>{
 module.exports.hello = () =>{
     console.log('Hello World!!');
 }
+
+module.exports = this.router;

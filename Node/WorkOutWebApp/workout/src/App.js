@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import MenuBar from "./components/home_page/menu_bar";
-import { Container } from "@material-ui/core";
+import { Container } from '@material-ui/core';
 
 class App extends Component {
   state = {};
@@ -10,7 +10,9 @@ class App extends Component {
     super();
 
     this.state = {
-      data: "False"
+      data: "False",
+      first: "Jacinto",
+      pass: "Molina"
     };
     // this.comp();
   }
@@ -47,23 +49,49 @@ class App extends Component {
     //await response.json()
     this.setState({ data: body.Hello });
     alert("after changes" + body.Hello);
-
     //return body;
   };
 
   buttonOnAction = () => {
+
     alert("Start");
     this.setState({ data: "hello" });
     //this.comp()
-    this.callHelloBackend();
-    alert("End");
+
+    this.sendToServer('test')
+
+    // calling the backend //
+    //this.callHelloBackend();
+    //alert("End");
   };
+
+
+
+  sendToServer= (fetchName, stat)=>{
+    alert('Post')
+    //fetch('/test1',this.state)
+    fetch(('/test'),{
+      method: 'POST',
+      headers:{
+        accept: 'application/json',
+        'Content-type':'application/json'
+      }, 
+      body: JSON.stringify(this.state)
+    }).then((result)=> {
+          console.log("Result: "+result)   
+        //result.json()
+        })
+    .then((info)=> {
+      console.log(info);
+      alert(info) 
+    })
+  }
 
   render() {
     // this.comp();
-    console.log("****State is: " + this.state);
+    console.log("****State is: " + this.state.data);
     return (
-      <div className="App">
+      <div className="App"> 
         <Container maxWidth="lg">
           <MenuBar />
           <header className="App-header">
