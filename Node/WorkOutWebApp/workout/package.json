@@ -15,7 +15,10 @@
     "q": "^1.5.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "3.2.0"
+    "react-navigation": "^4.0.10",
+    "react-navigation-stack": "^1.10.3",
+    "react-scripts": "^3.3.0",
+    "react-swipeable-views": "^0.13.3"
   },
   "scripts": {
     "back": "node ./expressServ.js",
@@ -39,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^2.3.0"
   }
 }

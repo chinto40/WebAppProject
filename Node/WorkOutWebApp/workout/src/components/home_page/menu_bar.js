@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import logo from "../images/fit_life.png";
-import { textAlign } from "@material-ui/system";
+import LoginDialog from "../login/login";
 
 const useStyles = makeStyles(theme => ({
   menu: {
@@ -49,7 +49,11 @@ const MenuBar = () => {
           <Button className={classes.button} color="#47443B">
             Meal Plans
           </Button>
-          <Button className={classes.button} color="#47443B">
+          <Button
+            className={classes.button}
+            color="#47443B"
+            onClick={<LoginDialog />}
+          >
             Login
           </Button>
         </Toolbar>
