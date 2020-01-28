@@ -17,6 +17,7 @@
     "react-dom": "^16.11.0",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.10.3",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "react-swipeable-views": "^0.13.3"
   },

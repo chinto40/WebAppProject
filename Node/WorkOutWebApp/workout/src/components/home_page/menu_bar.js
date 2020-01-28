@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import logo from "../images/fit_life.png";
 import LoginDialog from "../login/login";
+import HomePage from "./landing_page";
 
 const useStyles = makeStyles(theme => ({
   menu: {
@@ -44,10 +45,10 @@ const MenuBar = () => {
           </IconButton>
           <img src={logo} className="App-logo" alt="logo" />
           <Button className={classes.button} color="#47443B">
-            Workouts
+            Workout Builder
           </Button>
           <Button className={classes.button} color="#47443B">
-            Meal Plans
+            Workouts
           </Button>
           <Button
             className={classes.button}

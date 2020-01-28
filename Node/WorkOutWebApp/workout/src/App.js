@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
-import MenuBar from "./components/home_page/menu_bar";
-import { Container } from "@material-ui/core";
+import LoginDialog from "./components/login/login";
+import Registration from "./components/registration/register";
+import Workouts from "./components/workouts/workouts";
+import WorkoutBuilder from "./components/workout_builder/workout_builder";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import HomePage from "./components/home_page/landing_page";
 
 class App extends Component {
   state = {};
@@ -89,25 +93,46 @@ class App extends Component {
     // this.comp();
     console.log("****State is: " + this.state.data);
     return (
-      <div className="App">
-        <Container maxWidth="lg">
-          <MenuBar />
-          <header className="App-header">
-            <p>Get Started Today</p>
-            <p>The State is: => {this.state.data} End</p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-            <button onClick={this.buttonOnAction}>Click Me!!!</button>
-            <p> </p>
-          </header>
-        </Container>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
+              <li>
+                <Link to="/workouts">Workouts</Link>
+              </li>
+              <li>
+                <Link to="/workoutBuilder">Workout Builder</Link>
+              </li>
+            </ul>
+          </nav>
+          <Switch>
+            <Route path="/workoutBuilder">
+              <WorkoutBuilder />
+            </Route>
+            <Route path="/workouts">
+              <Workouts />
+            </Route>
+            <Route path="/register">
+              <Registration />
+            </Route>
+            <Route path="/login">
+              <LoginDialog />
+            </Route>
+            <Route path="/">
+              <HomePage />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }
