@@ -4,7 +4,7 @@ import LoginDialog from "./components/login/login";
 import Registration from "./components/registration/register";
 import Workouts from "./components/workouts/workouts";
 import WorkoutBuilder from "./components/workout_builder/workout_builder";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import HomePage from "./components/home_page/landing_page";
 
 class App extends Component {
@@ -95,41 +95,20 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
-              <li>
-                <Link to="/workouts">Workouts</Link>
-              </li>
-              <li>
-                <Link to="/workoutBuilder">Workout Builder</Link>
-              </li>
-            </ul>
-          </nav>
           <Switch>
-            <Route path="/workoutBuilder">
-              <WorkoutBuilder />
-            </Route>
-            <Route path="/workouts">
-              <Workouts />
-            </Route>
-            <Route path="/register">
-              <Registration />
-            </Route>
-            <Route path="/login">
-              <LoginDialog />
-            </Route>
-            <Route path="/">
-              <HomePage />
-            </Route>
+            <Route
+              exact={true}
+              path="/workoutBuilder"
+              component={WorkoutBuilder}
+            ></Route>
+            <Route exact={true} path="/workouts" component={Workouts}></Route>
+            <Route
+              exact={true}
+              path="/register"
+              component={Registration}
+            ></Route>
+            <Route exact={true} path="/login" component={LoginDialog}></Route>
+            <Route exact={true} path="/" component={HomePage}></Route>
           </Switch>
         </div>
       </BrowserRouter>
