@@ -6,6 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import TextField from "@material-ui/core/TextField";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,17 +59,57 @@ export default function SimpleTabs() {
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="simple tabs example"
+          aria-label="login_registration tabs"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Login" {...a11yProps(0)} />
+          <Tab label="Register" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Login
+        <TextField
+          autofocus
+          margin="dense"
+          id="username_login"
+          label="Username"
+          fullWidth
+        />
+        <TextField
+          autofocus
+          margin="dense"
+          id="password_login"
+          label="Password"
+          fullWidth
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Register
+        <TextField
+          autofocus
+          margin="dense"
+          id="first_name"
+          label="First Name"
+          fullWidth
+        />
+        <TextField
+          autofocus
+          margin="dense"
+          id="last_name"
+          label="Last Name"
+          fullWidth
+        />
+        <TextField
+          autofocus
+          margin="dense"
+          id="username_reg"
+          label="Username"
+          fullWidth
+        />
+        <TextField
+          autofocus
+          margin="dense"
+          id="password_reg"
+          label="Password"
+          fullWidth
+        />
       </TabPanel>
     </div>
   );

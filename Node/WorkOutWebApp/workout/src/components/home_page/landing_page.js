@@ -1,13 +1,11 @@
 import React from "react";
-import MenuBar from "./menu_bar";
+import MenuBar from "../menu_bar/menu_bar";
 import { Container } from "@material-ui/core";
 
 export default function HomePage() {
   return (
     <Container maxWidth="lg">
-      <MenuBar />
       <header className="App-header">
-        <p>Get Started Today</p>
         {/* <p>The State is: => {this.state.data} End</p>
           <a
             className="App-link"
