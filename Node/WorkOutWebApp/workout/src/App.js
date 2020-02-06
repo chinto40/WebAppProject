@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import MenuBar from "./components/home_page/menu_bar";
-import { Container } from '@material-ui/core';
+import Registration from "./components/registration/register";
+import LoginDialog from "./components/login/login";
+import MenuBar from "./components/menu_bar/menu_bar";
+import Workouts from "./components/workouts/workouts";
+import WorkoutBuilder from "./components/workout_builder/workout_builder";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import HomePage from "./components/home_page/landing_page";
+import { Container } from "@material-ui/core";
 
 class App extends Component {
   state = {};
@@ -53,63 +59,65 @@ class App extends Component {
   };
 
   buttonOnAction = () => {
-
     alert("Start");
     this.setState({ data: "hello" });
     //this.comp()
 
-    this.sendToServer('test')
+    this.sendToServer("test");
 
     // calling the backend //
     //this.callHelloBackend();
     //alert("End");
   };
 
-
-
-  sendToServer= (fetchName, stat)=>{
-    alert('Post')
+  sendToServer = (fetchName, stat) => {
+    alert("Post");
     //fetch('/test1',this.state)
-    fetch(('/test'),{
-      method: 'POST',
-      headers:{
-        accept: 'application/json',
-        'Content-type':'application/json'
-      }, 
+    fetch("/test", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-type": "application/json"
+      },
       body: JSON.stringify(this.state)
-    }).then((result)=> {
-          console.log("Result: "+result)   
-        //result.json()
-        })
-    .then((info)=> {
-      console.log(info);
-      alert(info) 
     })
-  }
+      .then(result => {
+        console.log("Result: " + result);
+        //result.json()
+      })
+      .then(info => {
+        console.log(info);
+        alert(info);
+      });
+  };
 
   render() {
     // this.comp();
     console.log("****State is: " + this.state.data);
     return (
-      <div className="App"> 
-        <Container maxWidth="lg">
-          <MenuBar />
-          <header className="App-header">
-            <p>Get Started Today</p>
-            <p>The State is: => {this.state.data} End</p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-            <button onClick={this.buttonOnAction}>Click Me!!!</button>
-            <p> </p>
-          </header>
-        </Container>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Container maxWidth="lg">
+            <MenuBar />
+          </Container>
+
+          <Switch>
+            <Route
+              exact={true}
+              path="/workoutBuilder"
+              component={WorkoutBuilder}
+            ></Route>
+            <Route exact={true} path="/workouts" component={Workouts}></Route>
+            <Route
+              exact={true}
+              path="/register"
+              component={Registration}
+            ></Route>
+            {/* <Route exact={true} path="/login" component={LoginDialog}></Route> */}
+            <Route exact={true} path="/" component={HomePage}></Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }
