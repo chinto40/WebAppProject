@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const Promise = require('promise')
-const Q = require('Q');
 let express = require('express')
 let router = express.Router()
 
@@ -127,7 +126,7 @@ let router = express.Router()
    
     //console.log('\n**Database is outside: '+ insta.con.state);
     // Authenticating User from the Database... **********************************************
-    router.readAuthUser2 = (username, password) =>{
+    /*router.readAuthUser2 = (username, password) =>{
         let result = false;
         let def =  Q.defer(); // using q to defer a promise.. 
         let prom = Q.Promise((resolve, reject)=>{
@@ -156,7 +155,7 @@ let router = express.Router()
     });
         console.log('out Results: '+ result);
         return def.promise;
-    };
+    };*/
 
     /**************************************
         Insert function for the Database 
