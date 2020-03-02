@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import Registration from "./components/registration/register";
 import LoginDialog from "./components/login/login";
 import MenuBar from "./components/menu_bar/menu_bar";
 import Workouts from "./components/workouts/workouts";
@@ -8,6 +7,7 @@ import WorkoutBuilder from "./components/workout_builder/workout_builder";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import HomePage from "./components/home_page/landing_page";
 import { Container } from "@material-ui/core";
+import UserDashboard from "./components/user_dashboard/user_dashboard";
 
 class App extends Component {
   state = {};
@@ -110,10 +110,9 @@ class App extends Component {
             <Route exact={true} path="/workouts" component={Workouts}></Route>
             <Route
               exact={true}
-              path="/register"
-              component={Registration}
+              path="/userDashboard"
+              component={UserDashboard}
             ></Route>
-            {/* <Route exact={true} path="/login" component={LoginDialog}></Route> */}
             <Route exact={true} path="/" component={HomePage}></Route>
           </Switch>
         </div>

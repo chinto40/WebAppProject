@@ -7,6 +7,7 @@ import avatar_f from "../images/avatar_female.jfif";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Avatar, IconButton, Menu, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   rightButton: {
@@ -65,7 +66,9 @@ function LoginDialog({ updateMenuBarLogin }) {
         open={avatarMenuOpen}
         onClose={handleAvatarMenuClose}
       >
-        <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
+        <Link to="/userDashboard" style={{ textDecoration: "none" }}>
+          <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
+        </Link>
         <MenuItem onClick={handleAvatarMenuClose}>Logout</MenuItem>
       </Menu>
       <Dialog
