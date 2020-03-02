@@ -10,6 +10,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    WebkitTextFillColor: (theme.color = "#47443B")
+  },
   rightButton: {
     marginLeft: "auto",
     WebkitTextFillColor: (theme.color = "#47443B")
@@ -59,14 +62,20 @@ function LoginDialog({ updateMenuBarLogin }) {
           horizontal: "right"
         }}
         keepMounted
+        WebkitTextFillColor="black"
         transformOrigin={{
           vertical: "top",
           horizontal: "right"
         }}
         open={avatarMenuOpen}
         onClose={handleAvatarMenuClose}
+        className={classes.root}
       >
-        <Link to="/userDashboard" style={{ textDecoration: "none" }}>
+        <Link
+          to="/userDashboard"
+          style={{ textDecoration: "none" }}
+          className={classes.root}
+        >
           <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
         </Link>
         <MenuItem onClick={handleAvatarMenuClose}>Logout</MenuItem>

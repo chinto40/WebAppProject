@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
 import LoginDialog from "./components/login/login";
-import MenuBar from "./components/menu_bar/menu_bar";
-import Workouts from "./components/workouts/workouts";
-import WorkoutBuilder from "./components/workout_builder/workout_builder";
+import MenuBar from "./components/menu_bar";
+import Workouts from "./components/workouts";
+import WorkoutBuilder from "./components/workout_builder";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import HomePage from "./components/home_page/landing_page";
+import HomePage from "./components/landing_page";
 import { Container } from "@material-ui/core";
-import UserDashboard from "./components/user_dashboard/user_dashboard";
+import UserDashboard from "./components/user_dashboard";
 
 class App extends Component {
   state = {};
