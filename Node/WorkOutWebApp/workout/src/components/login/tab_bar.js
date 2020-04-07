@@ -13,8 +13,11 @@ import {
   FormControl,
   InputLabel,
   Input,
-  InputAdornment
+  InputAdornment,
+  Button,
 } from "@material-ui/core";
+import { OnboardContext } from "./onboardContext";
+import { callHelloBackend } from "../../context";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,33 +39,50 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
+  value: PropTypes.any.isRequired,
 };
 
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   formControl: {
     marginLeft: theme.spacing(2),
-    marginTop: theme.spacing(2)
-  }
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export default function SimpleTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const { isOpen, setIsOpen } = React.useContext(OnboardContext);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleLogin = () => {
+    // call login function here
+    callHelloBackend();
+    setIsOpen(false);
+  };
+
+  const handleRegistration = () => {
+    // call registration function here
+    callHelloBackend();
+    setIsOpen(false);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -81,6 +101,17 @@ export default function SimpleTabs() {
       <TabPanel value={value} index={0}>
         <TextField autofocus id="username_login" label="Username" fullWidth />
         <TextField id="password_login" label="Password" fullWidth />
+        <Button
+          onClick={() => {
+            handleLogin();
+          }}
+          color="primary"
+        >
+          Login
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <TextField autofocus id="first_name" label="First Name" fullWidth />
@@ -118,6 +149,17 @@ export default function SimpleTabs() {
         <TextField id="goal_weight" label="Goal Weight" fullWidth />
         <TextField id="username_reg" label="Username" fullWidth />
         <TextField id="password_reg" label="Password" fullWidth />
+        <Button
+          onClick={() => {
+            handleRegistration();
+          }}
+          color="primary"
+        >
+          Register
+        </Button>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
       </TabPanel>
     </div>
   );

@@ -6,34 +6,29 @@ import Button from "@material-ui/core/Button";
 import logo from "./images/fit_life.png";
 import { Link } from "react-router-dom";
 import LoginDialog from "./login/login";
+import OnboardContext from "./login/onboardContext";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   menu: {
     backgroundColor: (theme.color = "#8ABD00"),
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
   },
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   title: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   button: {
     marginRight: theme.spacing(2),
-    WebkitTextFillColor: (theme.color = "#47443B")
-  }
+    WebkitTextFillColor: (theme.color = "#47443B"),
+  },
 }));
 
 const MenuBar = () => {
   const classes = useStyles();
-
-  const [isLoginOpen, setIsLoginOpen] = React.useState(false);
-
-  const handleLoginToggle = () => {
-    setIsLoginOpen(!isLoginOpen);
-  };
 
   return (
     <div className={classes.root}>
@@ -50,7 +45,9 @@ const MenuBar = () => {
               <Button className={classes.button}>Workouts</Button>
             </Link>
           </div>
-          <LoginDialog {...isLoginOpen} />
+          <OnboardContext>
+            <LoginDialog />
+          </OnboardContext>
         </Toolbar>
       </AppBar>
     </div>
