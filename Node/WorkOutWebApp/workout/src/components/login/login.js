@@ -8,31 +8,32 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { Avatar, IconButton, Menu, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
+import { OnboardContext } from "./onboardContext";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    WebkitTextFillColor: (theme.color = "#47443B")
+    WebkitTextFillColor: (theme.color = "#47443B"),
   },
   rightButton: {
     marginLeft: "auto",
-    WebkitTextFillColor: (theme.color = "#47443B")
-  }
+    WebkitTextFillColor: (theme.color = "#47443B"),
+  },
 }));
 
 function LoginDialog({ updateMenuBarLogin }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const { isOpen, setIsOpen } = React.useContext(OnboardContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const avatarMenuOpen = Boolean(anchorEl);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setIsOpen(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    setIsOpen(false);
   };
 
-  const handleAvatarClick = event => {
+  const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -59,13 +60,13 @@ function LoginDialog({ updateMenuBarLogin }) {
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right"
+          horizontal: "right",
         }}
         keepMounted
         WebkitTextFillColor="black"
         transformOrigin={{
           vertical: "top",
-          horizontal: "right"
+          horizontal: "right",
         }}
         open={avatarMenuOpen}
         onClose={handleAvatarMenuClose}
@@ -81,19 +82,11 @@ function LoginDialog({ updateMenuBarLogin }) {
         <MenuItem onClick={handleAvatarMenuClose}>Logout</MenuItem>
       </Menu>
       <Dialog
-        open={open}
+        open={isOpen}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
         <SimpleTabs />
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Continue
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

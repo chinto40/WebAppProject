@@ -8,6 +8,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import HomePage from "./components/landing_page";
 import { Container } from "@material-ui/core";
 import UserDashboard from "./components/user_dashboard";
+import AppContextProvider from "./context";
 
 class App extends Component {
   state = {};
@@ -95,28 +96,30 @@ class App extends Component {
     // this.comp();
     console.log("****State is: " + this.state.data);
     return (
-      <BrowserRouter>
-        <div className="App">
-          <Container maxWidth="lg">
-            <MenuBar />
-          </Container>
+      <AppContextProvider>
+        <BrowserRouter>
+          <div className="App">
+            <Container maxWidth="lg">
+              <MenuBar />
+            </Container>
 
-          <Switch>
-            <Route
-              exact={true}
-              path="/workoutBuilder"
-              component={WorkoutBuilder}
-            ></Route>
-            <Route exact={true} path="/workouts" component={Workouts}></Route>
-            <Route
-              exact={true}
-              path="/userDashboard"
-              component={UserDashboard}
-            ></Route>
-            <Route exact={true} path="/" component={HomePage}></Route>
-          </Switch>
-        </div>
-      </BrowserRouter>
+            <Switch>
+              <Route
+                exact={true}
+                path="/workoutBuilder"
+                component={WorkoutBuilder}
+              ></Route>
+              <Route exact={true} path="/workouts" component={Workouts}></Route>
+              <Route
+                exact={true}
+                path="/userDashboard"
+                component={UserDashboard}
+              ></Route>
+              <Route exact={true} path="/" component={HomePage}></Route>
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </AppContextProvider>
     );
   }
 }
