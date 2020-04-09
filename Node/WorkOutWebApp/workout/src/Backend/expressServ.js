@@ -25,6 +25,9 @@ app.get('/Hello',(req,res)=>{
 })
 
 app.get('/getUser', async (req,res)=>{
+})
+
+app.get('/getAllUsers', async (req,res)=>{
     console.log('** Retreiving all the users in the list. ')
     //const users = JSON.parse(JSON.stringify(DB.readAll()))
     const users = await DB.readAll2()
@@ -64,6 +67,36 @@ app.all('/test',(req, res)=>{
     console.log('Testing sucessfull' + req.body.data);
     res.send({data:'Completions'})
 })
+
+
+app.post('/registerUser', async(req, res)=>{
+// TODO: Here we need to set up the Database for a new User..
+// User_Stats  - UserID, Current_Calories, Goal_Calories, Current_Weight, Goal_Weight,Activity_Level, User_Height
+// users - UserID, LastName,FirstName, UserLogin, UserPassword
+    let test = {LastName: "Dragon",FirstName: "Born",UserLogin: "DragonBorn",UserPassword: "password", Current_Calories: 0,Goal_Calories: 0,Current_Weight: 0,Goal_Weight: 0,Activity_Level: 0,User_Height: 0}
+    //let obj = JSON.parse(JSON.stringify(req.body));
+    let goalCalMale = 6.3 * test.Current_Weight + (12.9 * (Need to see how we are passing in hieght) - (6.8* Need Age))
+    let obj = JSON.parse(JSON.stringify(test));
+   let returnUser = await DB.insertIntoUser(obj.LastName, obj.FirstName,obj.UserLogin,obj.UserPassword) // inserting first user creating the userID.
+   let getUser = await DB.getUser(obj.UserLogin)
+    //userID, CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeight
+    let status =  DB.resinsertIntoUser(getUser.UserID,obj.Goal_Calories,obj.); // Getting the userid stored in returnUser into
+
+   // console.log('Print list... ' + JSON.stringify(users))
+    res.send(JSON.stringify(obj))
+})
+
+
+
+//Gets the calories for a user...
+app.post('/getCalories', async (req, res)=>{
+        let body = JSON.parse(JSON.stringify(req.body))
+        let calCounter = await DB.getUser(body.UserLogin,body.Date) //gets the user calorie counter for a user and the specific date. 
+
+        res.send(JSON.stringify({Calorie_Counter: calCounter}))
+})
+
+
 
 app.post('/postingTest',(req,res)=>{
     //DB.insertUser(req.body);

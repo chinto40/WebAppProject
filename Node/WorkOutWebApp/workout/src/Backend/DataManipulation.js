@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const Promise = require('promise')
 let express = require('express')
 let router = express.Router()
+const http = require('http')
 
     // instance of mysql connection,.. 
     // let con; to define it and use it as a indicator for insta the sql connection creating a singleton... 
@@ -48,7 +49,7 @@ let router = express.Router()
     /* Ends the Database Communications...*/
     function TheEnd (){
         con.end((err) =>{
-    
+
             })  
         }
 
@@ -91,14 +92,103 @@ let router = express.Router()
                         if(username === data[i].UserLogin && password === data[i].UserPassword){
                             resolve(true);
                         }
-                    i++;
-                });
-            resolve(false);
-        })
-    }) 
+                        i++;
+                    });
+                resolve(false);
+            })
+        }) 
     return prom;
 };
   
+    // trying too sync the insert and return statment. 
+    router.registerUser= async (user) =>{
+       let prom = await new Promise( function(reject,resolve){
+        
+        insertIntoUser(user.LastName,user.firstname,user.userLog,user.password)
+        resolve({status:true,userID: getUserID(user.UserLog)})
+       })
+      /* if(prom.status == true){
+//********************************************************************************************* */
+    // Need to pass the params. UserLog, CurCalories,GoCalories,CurWeight,GoWeight,
+    // actLevel,UserHeight)=>{
+        //    let GoalCal =  // Calorie Formula.. 
+          //  insertIntoUserStat(prom.userID, user)
+      // }*/
+      return prom;
+    }
+    //'Insert INTO users Set ?', {UserID: 4,FirstName: user.FirstName,LastName: user.LastName,UserLogin:user.userID,UserPassword:user.password},(err,res)=>
+    router.insertIntoUser = (lastname, firstname, userLog, userPass) =>{
+        let UserObj = {FirstName:firstname, LastName:lastname, UserLogin: userLog, UserPassword:userPass}
+        let UserList = [firstname, lastname, userLog, userPass]
+        con.query('Insert INTO users(FirstName, LastName, UserLogin, UserPassword) VALUES(?,?,?,?)', userList, (err,data)=>{
+            if(err){
+                throw err;
+            }
+        })
+    }
+
+    //Function too get callries. 
+    let caloriesFun = ()=>{
+
+    }
+
+    //Going to use this to insert into USer stat
+
+    // UserID, Current_Calories, Goal_Calories,
+    // Current_Weight, Goal_Weight, Activity_Level, User_Height
+    router.insertIntoUserStat = (userID, CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeight)=>{
+        let UserList = [userID,CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeight]
+        //calculations to get Goal caloriries..
+        let query = 'Insert INTO User_Stats(UserID, Current_Calories, Goal_Calories,Current_Weight,Goal_Weight, Activity_Level,User_Height) Values(?,?,?,?,?,?,?)'
+        con.query(query,UserList,(err,data)=>{
+            if(err){
+                throw err;
+            }
+
+        })
+    }
+
+    //gets Calories.. 
+    router.getUserCalories = (userName, date) =>{ // dd/mm/yyyy
+        let query = 'Select Calorie_Counter From User_Calories where UserName=? and Date=?';
+        let prom = new Promise(function(resolve,reject){
+            con.query(query,[userName,date], (err,data) =>{
+                if(err){
+                    reject(err);
+                    throw err; 
+                }
+                resolve(data);
+            })
+        })
+        return prom
+    }
+
+    //Need a function to check if one exsist... 
+
+    router.setUserCalories = (UserName, date) =>{
+        let query = 'Update User_Calories Set Calorie_Counter = ? Where UserName = ? and Date=?'
+        con.query(query, [UserName, date], (err, data)=>{
+            if (err){
+                throw err;
+            }
+            //else code should run and should now be inserted. 
+        })
+    }
+
+    //Use this to return 
+    router.getUser = (userLog)=>{
+        let Prom = new Promise(function(resolve, reject){
+            con.query('Select UserID from users Where UserLogin = ?',userLog,(err,data)=>{
+                if(err){
+                    reject(err)
+                    throw err
+                }
+                resolve(data)
+            })
+        })
+        return Prom;
+    }
+
     // reading in from the database..
   /*  router.readAll = ()=>{
         let test = {};
