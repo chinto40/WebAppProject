@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import LoginDialog from "./components/login/login";
+import LoginDialog from "./components/login/loginDialog";
 import MenuBar from "./components/menu_bar";
 import Workouts from "./components/workouts";
 import WorkoutBuilder from "./components/workout_builder";
@@ -19,7 +19,7 @@ class App extends Component {
     this.state = {
       data: "False",
       first: "Jacinto",
-      pass: "Molina"
+      pass: "Molina",
     };
     // this.comp();
   }
@@ -38,7 +38,7 @@ class App extends Component {
         alert(res.Hello);
         this.setState({ data: res.Hello }).then();
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   callHelloBackend = async () => {
@@ -78,15 +78,15 @@ class App extends Component {
       method: "POST",
       headers: {
         accept: "application/json",
-        "Content-type": "application/json"
+        "Content-type": "application/json",
       },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(this.state),
     })
-      .then(result => {
+      .then((result) => {
         console.log("Result: " + result);
         //result.json()
       })
-      .then(info => {
+      .then((info) => {
         console.log(info);
         alert(info);
       });

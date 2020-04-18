@@ -5,7 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import logo from "./images/fit_life.png";
 import { Link } from "react-router-dom";
-import LoginDialog from "./login/login";
+import LoginDialog from "./login/loginDialog";
 import OnboardContext from "./login/onboardContext";
 
 const useStyles = makeStyles((theme) => ({

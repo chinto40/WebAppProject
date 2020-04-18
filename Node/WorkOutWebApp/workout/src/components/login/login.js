@@ -1,95 +1,38 @@
-import React, { Component } from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import SimpleTabs from "./tab_bar";
-import avatar_f from "../images/avatar_female.jfif";
-import MenuIcon from "@material-ui/icons/Menu";
-import { Avatar, IconButton, Menu, MenuItem } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import React from "react";
 import { OnboardContext } from "./onboardContext";
+import { TextField, Button } from "@material-ui/core";
+import { callHelloBackend } from "../../context";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    WebkitTextFillColor: (theme.color = "#47443B"),
-  },
-  rightButton: {
-    marginLeft: "auto",
-    WebkitTextFillColor: (theme.color = "#47443B"),
-  },
-}));
-
-function LoginDialog({ updateMenuBarLogin }) {
-  const classes = useStyles();
+function Login() {
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const avatarMenuOpen = Boolean(anchorEl);
 
-  const handleClickOpen = () => {
-    setIsOpen(true);
+  const handleLogin = () => {
+    // call login function here
+    callHelloBackend();
+    setIsOpen(false);
   };
+
   const handleClose = () => {
     setIsOpen(false);
   };
 
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleAvatarMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Button className={classes.rightButton} onClick={handleClickOpen}>
+    <React.Fragment>
+      <TextField autofocus id="username_login" label="Username" fullWidth />
+      <TextField id="password_login" label="Password" fullWidth />
+      <Button
+        onClick={() => {
+          handleLogin();
+        }}
+        color="primary"
+      >
         Login
       </Button>
-      {/* TODO: Need to update to only show avatar when user is logged in */}
-      <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-avatar"
-        aria-haspopup="true"
-        onClick={handleAvatarClick}
-      >
-        <Avatar className={classes.rightButton} src={avatar_f} />
-      </IconButton>
-      <Menu
-        id="menu-avatar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        WebkitTextFillColor="black"
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={avatarMenuOpen}
-        onClose={handleAvatarMenuClose}
-        className={classes.root}
-      >
-        <Link
-          to="/userDashboard"
-          style={{ textDecoration: "none" }}
-          className={classes.root}
-        >
-          <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
-        </Link>
-        <MenuItem onClick={handleAvatarMenuClose}>Logout</MenuItem>
-      </Menu>
-      <Dialog
-        open={isOpen}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <SimpleTabs />
-      </Dialog>
-    </div>
+      <Button onClick={handleClose} color="primary">
+        Cancel
+      </Button>
+    </React.Fragment>
   );
 }
 
-export default LoginDialog;
+export default Login;
