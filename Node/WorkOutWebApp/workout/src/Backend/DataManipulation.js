@@ -118,33 +118,27 @@ const http = require('http')
     }
     //'Insert INTO users Set ?', {UserID: 4,FirstName: user.FirstName,LastName: user.LastName,UserLogin:user.userID,UserPassword:user.password},(err,res)=>
     router.insertIntoUser = (lastname, firstname, userLog, userPass) =>{
-        let UserObj = {FirstName:firstname, LastName:lastname, UserLogin: userLog, UserPassword:userPass}
+        //let UserObj = {FirstName:firstname, LastName:lastname, UserLogin: userLog, UserPassword:userPass}
         let UserList = [firstname, lastname, userLog, userPass]
-        con.query('Insert INTO users(FirstName, LastName, UserLogin, UserPassword) VALUES(?,?,?,?)', userList, (err,data)=>{
+        con.query('Insert INTO users(FirstName, LastName, UserLogin, UserPassword) VALUES(?,?,?,?)', UserList, (err,data)=>{
             if(err){
                 throw err;
             }
         })
     }
-
-    //Function too get callries. 
-    let caloriesFun = ()=>{
-
-    }
-
     //Going to use this to insert into USer stat
 
     // UserID, Current_Calories, Goal_Calories,
     // Current_Weight, Goal_Weight, Activity_Level, User_Height
-    router.insertIntoUserStat = (userID, CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeight)=>{
-        let UserList = [userID,CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeight]
+    router.insertIntoUserStat = (userID, CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeightFT,UserHightIn,UserGender,UserAge)=>{
+        let UserList = [userID,CurCalories,GoCalories,CurWeight,GoWeight,actLevel,UserHeightFT,UserHightIn,UserGender,UserAge]
+        console.log(UserList);
         //calculations to get Goal caloriries..
-        let query = 'Insert INTO User_Stats(UserID, Current_Calories, Goal_Calories,Current_Weight,Goal_Weight, Activity_Level,User_Height) Values(?,?,?,?,?,?,?)'
+        let query = 'Insert INTO User_Stats(UserID, Current_Calories, Goal_Calories,Current_Weight,Goal_Weight, Activity_Level,User_Height_Ft,User_Height_In,User_Gender,User_Age) Values(?,?,?,?,?,?,?,?,?,?)'
         con.query(query,UserList,(err,data)=>{
             if(err){
                 throw err;
             }
-
         })
     }
 
@@ -157,17 +151,28 @@ const http = require('http')
                     reject(err);
                     throw err; 
                 }
-                resolve(data);
+                resolve(JSON.stringify(data[0]))
             })
         })
         return prom
     }
 
-    //Need a function to check if one exsist... 
 
-    router.setUserCalories = (UserName, date) =>{
+
+    //IDK why i wrote this.. 
+    router.setUserCalories = (UserName, date,calories) =>{
         let query = 'Update User_Calories Set Calorie_Counter = ? Where UserName = ? and Date=?'
-        con.query(query, [UserName, date], (err, data)=>{
+        con.query(query, [calories, UserName, date], (err, data)=>{
+            if (err){
+                throw err;
+            }
+            //else code should run and should now be inserted. 
+        })
+    }
+    //Insert a new User Calorie Log.. 
+    router.InsertUserCalories = (UserID, date,calories) =>{
+        let query = 'Insert into User_Calories(Calorie_Counter, UserName, Date) VALUES (?,?,?)'
+        con.query(query, [calories, UserID, date], (err, data)=>{
             if (err){
                 throw err;
             }
@@ -175,77 +180,122 @@ const http = require('http')
         })
     }
 
+    router.insertWorkoutImage = (WorkoutName, WorkoutGroupID, Path)=>{
+        con.query('Insert into WorkOut_Object (Workout_Name, Workout_GroupID,Workout_ImagePath) VALUES(? , ?, ?)', [WorkoutName,WorkoutGroupID,Path], (err,data)=>{
+            if(err){
+                reject(err);
+            }
+            //else Query Should run and insert.. 
+        })
+    }
+
+    //Checking to see if a row for calories exists... 
+    router.CheckCreateCalories = (UserID, date) =>{
+        return new Promise(function(resolve, reject){
+            con.query('Select EXISTS (Select * from User_Calories WHERE UserName = ? AND Date = ?)', [UserID, date], (err,data)=>{
+                if(err){
+                    reject(err);
+                }
+                data.forEach(element => {
+                    console.log(JSON.stringify(data)+"***")
+                    resolve(data[0]["EXISTS (Select * from User_Calories WHERE UserName = "+ UserID +" AND Date = '" + date+"')"])
+               }); 
+            })
+        })
+    }
+
+    /*
+     * Going to check if a User exists.. If you user exsit then reject the username upon creation.. 
+    */
+    router.checkUserExists = (UserLogin) =>{
+        console.log('Inside funtion: '+UserLogin)
+        return new Promise(function(resolve, reject){
+            con.query("Select EXISTS(Select * from users WHERE UserLogin = ?)",UserLogin,(err,data)=>{
+                if(err){
+                    reject(err);
+                }
+                data.forEach(element => {
+                     resolve(data[0]["EXISTS(Select * from users WHERE UserLogin = '"+UserLogin+"')"]);
+                });
+            })
+        })
+    }
+
     //Use this to return 
     router.getUser = (userLog)=>{
         let Prom = new Promise(function(resolve, reject){
-            con.query('Select UserID from users Where UserLogin = ?',userLog,(err,data)=>{
+            con.query('Select * from users Where UserLogin = ?',userLog,(err,data)=>{
                 if(err){
                     reject(err)
                     throw err
                 }
-                resolve(data)
+                resolve(JSON.stringify(data[0]))
             })
         })
         return Prom;
     }
 
-    // reading in from the database..
-  /*  router.readAll = ()=>{
-        let test = {};
-        let def =  Q.defer();
-        let prom =  Q.Promise((resolve, reject)=>{
-            con.query('Select * From users',(err, data) =>{
+    //Returns  1 if there is at least one row returned.. Which means it exists. 
+    router.checkIfWorkoutExists = (workoutName) =>{
+        return new Promise(function(resolve, reject){
+            con.query('Select EXISTS(Select * from WorkOut_Object WHERE Workout_Name = ?)',workoutName,(err,data)=>{
                 if(err){
-                    console.log('Error: ' + err);
-                    def.reject(err)
-                    throw err;
+                    reject(err);
                 }
-                //console.log(data[0].UserID); // how to parse data
-                test = {UserID:data[0].UserID , FirstName: data[0].FirstName, LastName: data[0].LastName}
-                console.log('Inside the Testing: '+ JSON.stringify(test))
-                // def.resolve(JSON.stringify(data))
-                def.resolve(data[0].FirstName)
+                data.forEach(element => {
+                    resolve(data[0]["EXISTS(Select * from WorkOut_Object WHERE Workout_Name = '"+workoutName+"')"]);
+               });
             })
         })
-        console.log('***Ending of function call: ')
-       console.log('Last Promise: '+ def.promise);
-       // return  JSON.stringify(Promise.all(def.promise))
-       return  def.promise;
-    }*/
-
-   
-    //console.log('\n**Database is outside: '+ insta.con.state);
-    // Authenticating User from the Database... **********************************************
-    /*router.readAuthUser2 = (username, password) =>{
-        let result = false;
-        let def =  Q.defer(); // using q to defer a promise.. 
-        let prom = Q.Promise((resolve, reject)=>{
-            con.query('Select UserLogin, UserPassword FROM users',(err ,data)=>{
+    }
+    //Gets a single workout by name
+    router.getWorkout= (workOutName) =>{
+        return new Promise(function(resolve,reject){
+            con.query('Select * from WorkOut_Object Where Workout_Name = ?', workOutName , (err,data)=>{
                 if(err){
-                    console.log('Error: ' + err);
-                    def.reject(err)
-                    throw err;
+                    reject(err)
                 }
-                console.log('in the middle' + password);
-                console.log('\n**Database is inside: '+ con.state);
-                let i =0;
-                result = false;
-                data.forEach(element => {
-                    console.log(data[i].UserLogin + ' : ' + data[i].UserPassword + ', ' + username + ':' + password);
-                    if(username === data[i].UserLogin && password === data[i].UserPassword){
-                        console.log('true-true');
-                        result = true;
-                        def.resolve(result);
-                    }
-                i++;
-            });
-            console.log('inner Results: '+ result);
-            def.resolve(result);
-        });
-    });
-        console.log('out Results: '+ result);
-        return def.promise;
-    };*/
+                resolve(JSON.stringify(data[0]))
+            })
+        })
+    }
+
+     //Grabs all the workouts there..
+     router.getAllWorkOuts = ()=>{
+        return new Promise(function(resolve,reject){
+            con.query('Select * from WorkOut_Object', (err,data)=>{
+                if(err){
+                    reject(err);
+                }
+                resolve(JSON.stringify(data));
+            })
+        })
+    }
+
+        /* 
+          Gets the Current Weight for a Specific User. 
+        */
+    router.getCurrentUserWeight =(UserID)=>{
+        return new Promise(function (resolve,reject){
+            con.query('Select Current_Weight From User_Stats Where UserID = ?',UserID,(err,data)=>{
+                if(err){
+                    reject(err);
+                }
+                resolve(JSON.stringify(data[0]));
+            })
+        })
+    }
+
+    //Update the the Current weight for one user.. 
+    router.setCurrentUserWeight = (UserID,newWeight)=>{
+        return new Promise(function(resolve,reject){ //Dont need this.. not getting anything back just updateing my table...
+            con.query('UPDATE User_Stats SET Current_Weight=? WHERE UserID=?',[newWeight,UserID],(err,data)=>{
+                if(err){
+                    reject(err)
+                }
+            })
+        })
+    }
 
     /**************************************
         Insert function for the Database 
