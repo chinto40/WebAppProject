@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Select,
   MenuItem,
@@ -9,11 +9,34 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { OnboardContext } from "./onboardContext";
 import { callHelloBackend } from "../../context";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  formControl: {
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+}));
+
 function Registration() {
+  const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
+  const { isSnackbarOpen, setIsSnackbarOpen } = React.useState(false);
+
+  const [FirstName, setFirstName] = React.useState("");
+  const [LastName, setLastName] = React.useState("");
+  const [User_Height_Ft, setUser_Height_Ft] = React.useState(null);
+  const [User_Height_In, setUser_Height_In] = React.useState(null);
+  const [Current_Weight, setCurrent_Weight] = React.useState(null);
+  const [ExerciseLevel, setExerciseLevel] = React.useState(null);
+  const [Goal_Weight, setGoal_Weight] = React.useState(null);
+  const [UserLogin, setUserLogin] = React.useState("");
+  const [UserPassword, setUserPassword] = React.useState("");
 
   const handleRegistration = () => {
     // call registration function here
@@ -23,6 +46,46 @@ function Registration() {
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
+
+  const handleUsernameChange = (event) => {
+    setUserLogin(event.target.value);
+  };
+
+  const handleUserHeightFtChange = (event) => {
+    setUser_Height_Ft(event.target.value);
+  };
+
+  const handleUserHeightInChange = (event) => {
+    setUser_Height_In(event.target.value);
+  };
+
+  const handleCurrentWeightChange = (event) => {
+    setCurrent_Weight(event.target.value);
+  };
+
+  const handleExerciseLevelChange = (event) => {
+    setExerciseLevel(event.target.value);
+  };
+
+  const handleGoalWeightChange = (event) => {
+    setGoal_Weight(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setUserPassword(event.target.value);
+  };
+
+  const toggleIsSnackbarOpen = () => {
+    isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
   };
 
   return (

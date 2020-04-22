@@ -1,95 +1,88 @@
-import React, { Component } from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import SimpleTabs from "./tab_bar";
-import avatar_f from "../images/avatar_female.jfif";
-import MenuIcon from "@material-ui/icons/Menu";
-import { Avatar, IconButton, Menu, MenuItem } from "@material-ui/core";
+import React from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import { AppBar, Tab, Tabs, Box, Typography, Dialog } from "@material-ui/core";
+import Registration from "./registration";
+import Login from "./login";
 import { OnboardContext } from "./onboardContext";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    WebkitTextFillColor: (theme.color = "#47443B"),
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
   },
-  rightButton: {
-    marginLeft: "auto",
-    WebkitTextFillColor: (theme.color = "#47443B"),
+  formControl: {
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
 }));
 
-function LoginDialog({ updateMenuBarLogin }) {
+export default function LoginDialog() {
   const classes = useStyles();
+  const [value, setValue] = React.useState(0);
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const avatarMenuOpen = Boolean(anchorEl);
 
   const handleClickOpen = () => {
     setIsOpen(true);
   };
+
   const handleClose = () => {
     setIsOpen(false);
   };
 
-  const handleAvatarClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleAvatarMenuClose = () => {
-    setAnchorEl(null);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Button className={classes.rightButton} onClick={handleClickOpen}>
-        Login
-      </Button>
-      {/* TODO: Need to update to only show avatar when user is logged in */}
-      <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-avatar"
-        aria-haspopup="true"
-        onClick={handleAvatarClick}
-      >
-        <Avatar className={classes.rightButton} src={avatar_f} />
-      </IconButton>
-      <Menu
-        id="menu-avatar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        WebkitTextFillColor="black"
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={avatarMenuOpen}
-        onClose={handleAvatarMenuClose}
-        className={classes.root}
-      >
-        <Link
-          to="/userDashboard"
-          style={{ textDecoration: "none" }}
-          className={classes.root}
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="login_registration tabs"
         >
-          <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
-        </Link>
-        <MenuItem onClick={handleAvatarMenuClose}>Logout</MenuItem>
-      </Menu>
-      <Dialog
-        open={isOpen}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <SimpleTabs />
-      </Dialog>
+          <Tab label="Login" {...a11yProps(0)} />
+          <Tab label="Register" {...a11yProps(1)} />
+        </Tabs>
+      </AppBar>
+
+      <TabPanel value={value} index={0}>
+        <Login />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <Registration />
+      </TabPanel>
     </div>
   );
 }
-
-export default LoginDialog;

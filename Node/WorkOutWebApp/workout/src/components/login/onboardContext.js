@@ -1,12 +1,12 @@
-import React from "react";
+import React, { createContext } from "react";
 
 export const OnboardContext = React.createContext();
 
-const OnboardContextProvider = ({ children }) => {
+export const OnboardContextProvider = ({ children }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const ctx = {
-    isOpen: isOpen,
-    setIsOpen: setIsOpen
+    isOpen,
+    setIsOpen,
   };
 
   return (
