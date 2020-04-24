@@ -24,7 +24,9 @@ app.get('/Hello',(req,res)=>{
             hey:"Worm"});
 })
 
-app.get('/getUser', async (req,res)=>{
+app.post('/getUser', async (req,res)=>{ // gets one single user. 
+    let obj = JSON.parse(JSON.stringify(req.body)) 
+    return (JSON.stringify(await DB.getUser(obj.UserLogin)))
 })
 
 app.get('/getAllUsers', async (req,res)=>{
@@ -35,7 +37,7 @@ app.get('/getAllUsers', async (req,res)=>{
     res.send(JSON.stringify(users));
 })
 
-app.post('/getUserAuthentication', async (req, res)=>{
+app.post('/getUserAuthentication', async (req, res)=>{ 
     console.log('in post to authenticate')
     let user = JSON.parse(JSON.stringify(req.body));
     console.log('UserLogin: '+ user.UserLogin +'\nUser Password: ' + user.UserPassword)
@@ -72,7 +74,7 @@ app.all('/test',(req, res)=>{
 })
 
 /*Ready */
-app.get('/GetAllWorkouts', async(req,res)=>{
+app.get('/GetAllWorkouts', async(req,res)=>{ 
     let workouts = await DB.getAllWorkOuts();
     res.send(JSON.stringify(workouts));
 })
@@ -89,13 +91,12 @@ app.post('/InsertWorkout', async (req,res)=>{
     res.sendStatus(400);
 })
 
-
 app.post('/getSingleWorkout', async(req,res)=>{
     let obj = JSON.parse(JSON.stringify(req.body))
     if(await DB.checkIfWorkoutExists(obj.Workout_Name)== 1){
          res.send((await (DB.getWorkout(obj.Workout_Name))))
     }
-     res.sendStatus(400)
+     res.sendStatus(400) //Doesnt Exists..
 })
 
 //Gets the Current User Weight... 
@@ -111,6 +112,7 @@ app.post('/setUserWeight', (req, res)=>{
     DB.setCurrentUserWeight(obj.UserID, obj.NewWeight) // or whatever the name is
     res.sendStatus(200)
 })
+
 
 //**Ready **Checks to see if the usr name is taken before 
 app.post('/registerUser', async(req, res)=>{
@@ -213,13 +215,117 @@ app.post('/addCalorie', async (req,res)=>{
     DB.setUserCalories(body.UserLogin, today,(counter+body.Calorie_Counter)); // going to get the calories + calories in datavbase... 
     res.sendStatus(200)
 })
-
-
 app.post('/postingTest',(req,res)=>{
     //DB.insertUser(req.body);
     console.log("******** inside post request")
     //res.send({connection: 'Connection Successful'})
     res.sendStatus(200);
 })
+
 var server = http.createServer(app).listen(port)
 
+
+/***************************** Post Functions********************************************************************* */
+let addToLatestCalorieCount = (jsonObj) =>{
+    // addCalorie - UserID, UserName, Calorie_Counter(What Calorie count you want to add to overall)
+    sendServer('/addCalorie', jsonObj)
+}
+
+let getLatestCaloriesForUser = (jsonObj) =>{
+    // getCalories - UserID, UserLogin
+    sendServer('/getCalories',jsonObj);
+    //return sendServer('/getCalories',jsonObj);
+}
+
+let getCaloriesForSpecificDate = (jsonObj) =>{
+    // GetCaloriestForDate - UserLogin, date MM-DD-YYYY
+    sendServer('/getCaloriesForDate', jsonObj);
+    //return sendServer('/getCaloriesForDate', jsonObj);
+}
+
+let getUserWeight= (jsonObj) =>{
+    // GetUserWeight - UserID
+    sendServer('/getUserWeight',jsonObj)
+    //return sendServer('/getUserWeight',jsonObj)
+}
+
+let SetUsersWeight = (jsonObj) =>{
+    // Set UserWeight - UserID, NewWeight
+    sendServer('/setUserWeight',jsonObj);
+}
+
+let GetASingleWorkout = (jsonObj) =>{
+// Get Single Workout -  Workout_Name
+    sendServer('/getSingleWorkout',jsonObj)
+    //return sendServer('/getSingleWorkout',jsonObj)
+}
+
+let InsertWorkoutIntoTable = (jsonObj)=>{
+    // Insert Workout - Workout_Name, Workout_GroupID, Workout_ImagePath'
+    sendServer('/InsertWorkout',jsonObj);
+}
+let GetUserAuthentication = (jsonObj)=>{
+    //GetUserAuth - UserLogin, UserPassword
+    sendServer('/getUserAuthentication',jsonObj);
+   // return  sendServer('/getUserAuthentication',jsonObj);
+}
+
+let RegistarUser = (jsonObj)=>{
+    // Register User - LastName,FirstName,UserLogin,User_Gender, User_Age,UserPassword, Current_Calories,Goal_Calories,Current_Weight,Goal_Weight,Activity_Level,User_Height_Ft,User_Height_In
+    sendServer('/registerUser',jsonObj);
+}
+
+let AddCalorieLog = (jsonObj)=>{
+     // addCalories - UserID, Calorie_Counter
+    sendServer('/addCalorie',jsonObj);
+}
+
+let getSingleUser=(jsonObj)=>{
+    // getUser - UserLogin
+    sendServer('/getUser',jsonObj)
+    //return sendServer('/getUser',jsonObj)
+}
+
+let sendServer = (fetchName, jsonObj) => {
+    fetch(("/"+fetchName), {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-type": "application/json"
+      },
+      body: JSON.stringify(jsonObj)
+    })
+      .then(result => {
+        //console.log("Result: " + result);
+      })
+      .then(info => {
+        console.log(info);
+        alert(info);
+      });
+  };
+  /***************************END OF POST METHODS************************************************* */
+
+
+  /**************************START OF GET METHODS ************************ */
+  
+  let GetAllTheWorkouts = ()=>{
+      return callHelloBackend('/GetAllWorkouts'); // Should return a JSON obj
+  }
+
+  let getAllUsers = () =>{
+      return callHelloBackend('/getAllUsers')
+  }
+  
+  callHelloBackend = async (name) => {
+    const response = await fetch("/"+name); // use fetch to connect to backend
+    const body = await response.json();
+    //console.log('Here in the body'+body.json.status)
+    //alert("after Parse And before Error");
+    if (response.status !== 200) {
+      throw Error(body.Error);
+    }
+    //alert("after Error");
+    //this.setState({ data: body.Hello });
+    return body; // IDk how to test this.. or send it as String or if it works by just returning JSON object. 
+  };
+  /**************************END OF GET METHODS ************************ */
