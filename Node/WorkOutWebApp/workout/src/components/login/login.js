@@ -4,7 +4,8 @@ import { TextField, Button, Snackbar, IconButton } from "@material-ui/core";
 import { CloseIcon } from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { callHelloBackend } from "../../context";
-import { getUserAuthentication } from "../../utils/fetchRequest";
+import { getUserAuthentication } from "../../utils/fetchRequest.js";
+//const fetch = require("../../utils/fetchRequest");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,11 +33,14 @@ function Login() {
     isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (UserLogin.trim() != "" && UserPassword.trim() != "") {
       let loginInfo = { UserLogin: UserLogin, UserPassword: UserPassword };
-      alert(getUserAuthentication(loginInfo));
-      setIsOpen(false);
+      //alert('Before: '+ loginInfo);
+    let data =  JSON.parse(await getUserAuthentication(loginInfo))
+      alert('Frontend: '+ data.status);
+      setIsOpen(data.status);
+ 
     } else {
       //alert("Please enter all fields.");
       toggleIsSnackbarOpen();

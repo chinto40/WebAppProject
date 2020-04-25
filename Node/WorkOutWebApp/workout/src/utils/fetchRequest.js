@@ -39,11 +39,13 @@ export let insertWorkoutIntoTable = (jsonObj) => {
   // Insert Workout - Workout_Name, Workout_GroupID, Workout_ImagePath'
   sendServer("InsertWorkout", jsonObj);
 };
-export let getUserAuthentication = (jsonObj) => {
+export const getUserAuthentication =  (jsonObj) => {
   //GetUserAuth - UserLogin, UserPassword
   //sendServer("/getUserAuthentication", jsonObj);
-  return sendServer("getUserAuthentication", jsonObj);
+  console.log('** In Get User Function..')
+  return sendServer("getUserAuthentication", jsonObj)
 };
+
 
 export let registerUser = (jsonObj) => {
   // Register User - LastName,FirstName,UserLogin,User_Gender, User_Age,UserPassword, Current_Calories,Goal_Calories,Current_Weight,Goal_Weight,Activity_Level,User_Height_Ft,User_Height_In
@@ -62,22 +64,26 @@ export let getSingleUser = (jsonObj) => {
 };
 
 let sendServer = (fetchName, jsonObj) => {
-  fetch("/" + fetchName, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(jsonObj),
-  })
-    .then((result) => {
-      alert("Result: " + JSON.stringify(result));
-      return result;
+  return new Promise(function(resolve,reject){
+    fetch("/" + fetchName, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(jsonObj),
     })
-    .then((info) => {
-      console.log(info);
-      //alert("Info: " + info);
-    });
+      .then((result) => {
+        result.json().then((data)=>{
+        //alert("Result: " + JSON.stringify(data));
+        resolve(JSON.stringify(data));
+        });
+        //return result;
+      }).catch((error) =>{
+        //console.log('ERROR: ' + error);
+        reject(error);
+      })
+  })
 };
 /***************************END OF POST METHODS************************************************* */
 

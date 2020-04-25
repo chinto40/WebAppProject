@@ -48,7 +48,7 @@ app.post("/getUserAuthentication", async (req, res) => {
 
   let auth = await DB.readAuthUser(user.UserLogin, user.UserPassword); // passing in username and password
   console.log("Authentication: " + auth);
-  res.send(auth);
+  res.send(JSON.stringify({status:auth}));
 });
 
 app.get("/", (req, res) => {
