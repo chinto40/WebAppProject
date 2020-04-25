@@ -58,7 +58,17 @@ export const validateLastName = (lastName) => {
 
 export const validateHeightFt = (heightFt) => {
   // must be an integer between 1 and 8
-  if (typeof heightFt === "int" && heightFt > 0 && heightFt < 9) {
+  if (heightFt.trim() === "") {
+    return false;
+  }
+  heightFt = Number(heightFt);
+  if (
+    isFinite(heightFt) &&
+    Number.isInteger(heightFt) &&
+    typeof heightFt === "number" &&
+    heightFt > 0 &&
+    heightFt < 9
+  ) {
     return true;
   } else {
     return false;
@@ -67,7 +77,17 @@ export const validateHeightFt = (heightFt) => {
 
 export const validateHeightIn = (heightIn) => {
   // must be an integer between 0 and 11
-  if (heightIn.isInteger() && heightIn >= 0 && heightIn < 12) {
+  if (heightIn.trim() === "") {
+    return false;
+  }
+  heightIn = Number(heightIn);
+  if (
+    isFinite(heightIn) &&
+    Number.isInteger(heightIn) &&
+    typeof heightIn === "number" &&
+    heightIn >= 0 &&
+    heightIn < 12
+  ) {
     return true;
   } else {
     return false;
@@ -76,12 +96,17 @@ export const validateHeightIn = (heightIn) => {
 
 export const validateWeight = (weight) => {
   // must be a float or int between 0 and 1500
+  if (weight.trim() === "") {
+    return false;
+  }
+  weight = Number(weight);
   if (
-    typeof weight === "number" &&
     isFinite(weight) &&
+    typeof weight === "number" &&
     weight >= 0 &&
     weight < 1500
   ) {
+    //alert(Number.isInteger(weight) === true);
     return true;
   } else {
     return false;
@@ -90,7 +115,41 @@ export const validateWeight = (weight) => {
 
 export const validateAge = (age) => {
   // must be an int between 15 and 130
-  if (age.isInteger() && age >= 15 && age <= 130) {
+  if (age.trim() === "") {
+    return false;
+  }
+  age = Number(age);
+  if (
+    isFinite(age) &&
+    Number.isInteger(age) &&
+    typeof age === "number" &&
+    age >= 15 &&
+    age <= 130
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const validateActivityLevel = (level) => {
+  if (
+    isFinite(level) &&
+    typeof level === "number" &&
+    (level === 0 || level === 1 || level === 2 || level === 3)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const validateGender = (gender) => {
+  if (
+    isFinite(gender) &&
+    typeof gender === "number" &&
+    (gender === 0 || gender === 1)
+  ) {
     return true;
   } else {
     return false;

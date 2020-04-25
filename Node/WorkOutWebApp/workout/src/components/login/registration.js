@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Select,
   MenuItem,
@@ -21,11 +21,19 @@ import {
   validateHeightIn,
   validateWeight,
   validateAge,
+  validateActivityLevel,
+  validateGender,
 } from "../../utils/validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    "&$error": {
+      color: "red",
+    },
+  },
+  error: {
+    color: "red",
   },
   height: {
     marginLeft: theme.spacing(2),
@@ -67,6 +75,7 @@ function Registration() {
   const [Goal_Weight, setGoal_Weight] = React.useState(null);
   const [UserLogin, setUserLogin] = React.useState("");
   const [UserPassword, setUserPassword] = React.useState("");
+  const [errors, setErrors] = React.useState({});
 
   const handleRegistration = () => {
     // call registration function here
@@ -79,64 +88,132 @@ function Registration() {
   };
 
   const handleFirstNameChange = (event) => {
-    setFirstName(event.target.value);
+    let isError = validateFirstName(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (!isError) {
+      setFirstName(event.target.value);
+    }
   };
 
   const handleLastNameChange = (event) => {
-    setLastName(event.target.value);
+    let isError = validateLastName(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (!isError) {
+      setLastName(event.target.value);
+    }
   };
 
   const handleUserGenderChange = (event) => {
-    setUser_Gender(event.target.value);
+    let isError = validateGender(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (isError) {
+      document.getElementById("gender_label").style.color = "red";
+    } else {
+      setUser_Gender(event.target.value);
+      document.getElementById("gender_label").style = classes.height;
+    }
   };
 
   const handleUserAgeChange = (event) => {
-    setUser_Age(event.target.value);
+    let isError = validateAge(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (!isError) {
+      setUser_Age(event.target.value);
+    }
   };
 
   const handleUsernameChange = (event) => {
-    setUserLogin(event.target.value);
+    let isError = validateUsername(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (!isError) {
+      setUserLogin(event.target.value);
+    }
   };
 
   const handleUserHeightFtChange = (event) => {
+    let isError = validateHeightFt(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
     setUser_Height_Ft(event.target.value);
+    if (isError) {
+      document.getElementById("height_ft_label").style.color = "red";
+    } else {
+      document.getElementById("height_ft_label").style = classes.height;
+    }
   };
 
   const handleUserHeightInChange = (event) => {
+    let isError = validateHeightIn(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
     setUser_Height_In(event.target.value);
+    if (isError) {
+      document.getElementById("height_in_label").style.color = "red";
+    } else {
+      document.getElementById("height_in_label").style = classes.height;
+    }
   };
 
   const handleCurrentWeightChange = (event) => {
+    let isError = validateWeight(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
     setCurrent_Weight(event.target.value);
+    if (isError) {
+      document.getElementById("weight_label").style.color = "red";
+    } else {
+      document.getElementById("weight_label").style = classes.height;
+    }
   };
 
   const handleActivity_LevelChange = (event) => {
-    setActivity_Level(event.target.value);
+    let isError = validateActivityLevel(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (isError) {
+      document.getElementById("activity_level_label").style.color = "red";
+    } else {
+      setActivity_Level(event.target.value);
+      document.getElementById("activity_level_label").style = classes.height;
+    }
   };
 
   const handleGoalWeightChange = (event) => {
-    setGoal_Weight(event.target.value);
+    let isError = validateWeight(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (isError) {
+      document.getElementById("goal_weight_label").style.color = "red";
+    } else {
+      setGoal_Weight(event.target.value);
+      document.getElementById("goal_weight_label").style = classes.height;
+    }
   };
 
   const handlePasswordChange = (event) => {
-    setUserPassword(event.target.value);
+    let isError = validatePassword(event.target.value) ? false : true;
+    handleErrorCheck(event.target.id, isError);
+    if (!isError) {
+      setUserPassword(event.target.value);
+    }
   };
 
   const toggleIsSnackbarOpen = () => {
     isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
   };
 
+  const handleErrorCheck = (field, isError) => {
+    let obj = { [field]: isError };
+    setErrors(Object.assign(errors, obj));
+  };
+
   return (
     <React.Fragment className={classes.root}>
       <TextField
+        autoFocus
         required
-        autofocus
         id="first_name"
         label="First Name"
         value={FirstName}
         onChange={handleFirstNameChange}
         className={classes.halfLeft}
-        onBlur={(e) => validateFirstName(e.target.value)}
+        error={errors["first_name"]}
+        onBlur={handleFirstNameChange}
       />
       <TextField
         required
@@ -145,38 +222,44 @@ function Registration() {
         value={LastName}
         onChange={handleLastNameChange}
         className={classes.halfRight}
-        onBlur={(e) => validateLastName(e.target.value)}
+        error={errors["last_name"]}
+        onBlur={handleLastNameChange}
       />
       <FormControl required className={classes.gender}>
-        <InputLabel>Gender</InputLabel>
+        <InputLabel id="gender_label">Gender</InputLabel>
         <Select
           id="gender"
           value={User_Gender}
+          label="gender_label"
           onChange={handleUserGenderChange}
+          error={errors["gender"]}
+          onBlur={handleUserGenderChange}
         >
           <MenuItem value={0}>Female</MenuItem>
           <MenuItem value={1}>Male</MenuItem>
         </Select>
       </FormControl>
       <FormControl required className={classes.height}>
-        <InputLabel>Height</InputLabel>
+        <InputLabel id="height_ft_label">Height</InputLabel>
         <Input
           id="height_ft"
           label="Height"
           value={User_Height_Ft}
           onChange={handleUserHeightFtChange}
-          onBlur={(e) => validateHeightFt(e.target.value)}
+          error={errors["height_ft"]}
           endAdornment={<InputAdornment position="end">ft</InputAdornment>}
+          onBlur={handleUserHeightFtChange}
         />
       </FormControl>
       <FormControl required className={classes.height}>
-        <InputLabel>Height</InputLabel>
+        <InputLabel id="height_in_label">Height</InputLabel>
         <Input
           id="height_in"
           label="Height"
           value={User_Height_In}
           onChange={handleUserHeightInChange}
-          onBlur={(e) => validateHeightIn(e.target.value)}
+          error={errors["height_in"]}
+          onBlur={handleUserHeightInChange}
           endAdornment={<InputAdornment position="end">in</InputAdornment>}
         />
       </FormControl>
@@ -186,25 +269,29 @@ function Registration() {
         label="Age"
         value={User_Age}
         onChange={handleUserAgeChange}
-        onBlur={(e) => validateAge(e.target.value)}
+        error={errors["age"]}
         className={classes.halfLeft}
+        onBlur={handleUserAgeChange}
       />
       <FormControl required className={classes.halfRight}>
-        <InputLabel>Weight</InputLabel>
+        <InputLabel id="weight_label">Weight</InputLabel>
         <Input
           id="weight"
           value={Current_Weight}
           onChange={handleCurrentWeightChange}
-          onBlur={(e) => validateWeight(e.target.value)}
+          error={errors["weight"]}
+          onBlur={handleCurrentWeightChange}
           endAdornment={<InputAdornment position="end">lbs</InputAdornment>}
         />
       </FormControl>
       <FormControl required className={classes.halfLeft}>
-        <InputLabel>Activity Level</InputLabel>
+        <InputLabel id="activity_level_label">Activity Level</InputLabel>
         <Select
           id="activity_level"
           value={Activity_Level}
           onChange={handleActivity_LevelChange}
+          error={errors["activity_level"]}
+          onBlur={handleActivity_LevelChange}
         >
           <MenuItem value={0}>Little to no exercise</MenuItem>
           <MenuItem value={1}>Exercise 1 - 3 times/week</MenuItem>
@@ -213,12 +300,13 @@ function Registration() {
         </Select>
       </FormControl>
       <FormControl required className={classes.halfRight}>
-        <InputLabel>Goal Weight</InputLabel>
+        <InputLabel id="goal_weight_label">Goal Weight</InputLabel>
         <Input
           id="goal_weight"
           value={Goal_Weight}
           onChange={handleGoalWeightChange}
-          onBlur={(e) => validateWeight(e.target.value)}
+          error={errors["goal_weight"]}
+          onBlur={handleGoalWeightChange}
           endAdornment={<InputAdornment position="end">lbs</InputAdornment>}
         />
       </FormControl>
@@ -228,7 +316,8 @@ function Registration() {
         label="Username"
         value={UserLogin}
         onChange={handleUsernameChange}
-        onBlur={(e) => validateUsername(e.target.value)}
+        error={errors["username_reg"]}
+        onBlur={handleUsernameChange}
         fullWidth
       />
       <TextField
@@ -237,7 +326,8 @@ function Registration() {
         label="Password"
         value={UserPassword}
         onChange={handlePasswordChange}
-        onBlur={(e) => validatePassword(e.target.value)}
+        error={errors["password_reg"]}
+        onBlur={handlePasswordChange}
         fullWidth
       />
       <div className={classes.buttonsDiv}>
