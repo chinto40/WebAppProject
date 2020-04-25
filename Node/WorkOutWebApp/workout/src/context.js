@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 
 export const AppContext = React.createContext();
 
@@ -21,10 +21,10 @@ export const callHelloBackend = async () => {
 };
 
 const AppContextProvider = ({ children }) => {
-  const [isAuthUser, setIsAuthUser] = React.useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
   const ctx = {
-    isAuthUser: isAuthUser,
-    setIsAuthUser: setIsAuthUser,
+    isUserLoggedIn: isUserLoggedIn,
+    setIsUserLoggedIn: setIsUserLoggedIn,
   };
 
   return <AppContext.Provider value={ctx}>{children}</AppContext.Provider>;

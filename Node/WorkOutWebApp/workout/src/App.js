@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
-import LoginDialog from "./components/login/loginDialog";
 import MenuBar from "./components/menu_bar";
-import Workouts from "./components/workouts";
-import WorkoutBuilder from "./components/workout_builder";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import HomePage from "./components/landing_page";
 import { Container } from "@material-ui/core";
-import UserDashboard from "./components/user_dashboard";
 import AppContextProvider from "./context";
+import { OnboardContextProvider } from "./components/login/onboardContext";
+import Router from "./router";
 
 class App extends Component {
   state = {};
@@ -97,28 +93,14 @@ class App extends Component {
     console.log("****State is: " + this.state.data);
     return (
       <AppContextProvider>
-        <BrowserRouter>
-          <div className="App">
-            <Container maxWidth="lg">
+        <div className="App">
+          <Container maxWidth="lg">
+            <OnboardContextProvider>
               <MenuBar />
-            </Container>
-
-            <Switch>
-              <Route
-                exact={true}
-                path="/workoutBuilder"
-                component={WorkoutBuilder}
-              ></Route>
-              <Route exact={true} path="/workouts" component={Workouts}></Route>
-              <Route
-                exact={true}
-                path="/userDashboard"
-                component={UserDashboard}
-              ></Route>
-              <Route exact={true} path="/" component={HomePage}></Route>
-            </Switch>
-          </div>
-        </BrowserRouter>
+            </OnboardContextProvider>
+          </Container>
+          <Router />
+        </div>
       </AppContextProvider>
     );
   }
