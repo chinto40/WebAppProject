@@ -1,13 +1,10 @@
 import React, { useContext } from "react";
 import { OnboardContext } from "./onboardContext";
-import {
-  TextField,
-  Button,
-  Snackbar,
-  SnackbarContent,
-} from "@material-ui/core";
+import { TextField, Button, Snackbar, IconButton } from "@material-ui/core";
+import { CloseIcon } from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { callHelloBackend } from "../../context";
+import { getUserAuthentication } from "../../utils/fetchRequest";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,29 +23,23 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
-  const { isSnackbarOpen, setIsSnackbarOpen } = React.useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
 
   const [UserLogin, setUserLogin] = React.useState("");
   const [UserPassword, setUserPassword] = React.useState("");
 
+  const toggleIsSnackbarOpen = () => {
+    isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
+  };
+
   const handleLogin = () => {
     if (UserLogin.trim() != "" && UserPassword.trim() != "") {
-      // call login function here
-      //npcallHelloBackend();
-      alert(UserLogin.trim() === "string");
-      //console.log("username: " + UserLogin + ", password: " + UserPassword);
-      alert("All good!");
+      let loginInfo = { UserLogin: UserLogin, UserPassword: UserPassword };
+      alert(getUserAuthentication(loginInfo));
       setIsOpen(false);
     } else {
-      alert("Please enter all fields.");
-      //alert(typeof UserLogin.trim() === "string");
-      return {
-        /* <Snackbar
-          open={isSnackbarOpen}
-          onClose={toggleIsSnackbarOpen}
-          message="Please enter all fields."
-        /> */
-      };
+      //alert("Please enter all fields.");
+      toggleIsSnackbarOpen();
     }
   };
 
@@ -62,10 +53,6 @@ function Login() {
 
   const handlePasswordChange = (event) => {
     setUserPassword(event.target.value);
-  };
-
-  const toggleIsSnackbarOpen = () => {
-    isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
   };
 
   return (
@@ -102,6 +89,28 @@ function Login() {
           Cancel
         </Button>
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={isSnackbarOpen}
+        autoHideDuration={5000}
+        onClose={toggleIsSnackbarOpen}
+        message="Please enter all fields."
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={toggleIsSnackbarOpen}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </React.Fragment>
   );
 }
