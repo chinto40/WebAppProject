@@ -42,16 +42,17 @@ function Login() {
         alert("success");
         setIsOpen(false);
       } else {
-        document.getElementById("login_snackbar").message =
-          "Invalid credentials";
-        toggleIsSnackbarOpen();
+        console.log('***** inside handle ')
+       // document.getElementById("login_snackbar").message =
+         // "Invalid credentials";
+        //toggleIsSnackbarOpen();
         alert("failure: " + isSnackbarOpen);
       }
     } else {
       //alert("Please enter all fields.");
-      document.getElementById("login_snackbar").message =
-        "Please enter all fields.";
-      toggleIsSnackbarOpen();
+      //document.getElementById("login_snackbar").message =
+        //"Please enter all fields.";
+      //toggleIsSnackbarOpen();
     }
   };
 
