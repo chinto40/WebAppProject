@@ -37,12 +37,20 @@ function Login() {
     if (UserLogin.trim() != "" && UserPassword.trim() != "") {
       let loginInfo = { UserLogin: UserLogin, UserPassword: UserPassword };
       //alert('Before: '+ loginInfo);
-    let data =  JSON.parse(await getUserAuthentication(loginInfo))
-      alert('Frontend: '+ data.status);
-      setIsOpen(data.status);
- 
+      let data = JSON.parse(await getUserAuthentication(loginInfo));
+      if (data.status === true) {
+        alert("success");
+        setIsOpen(false);
+      } else {
+        document.getElementById("login_snackbar").message =
+          "Invalid credentials";
+        toggleIsSnackbarOpen();
+        alert("failure: " + isSnackbarOpen);
+      }
     } else {
       //alert("Please enter all fields.");
+      document.getElementById("login_snackbar").message =
+        "Please enter all fields.";
       toggleIsSnackbarOpen();
     }
   };
@@ -94,6 +102,7 @@ function Login() {
         </Button>
       </div>
       <Snackbar
+        id="login_snackbar"
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
