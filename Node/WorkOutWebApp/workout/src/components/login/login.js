@@ -1,11 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { OnboardContext } from "./onboardContext";
 import { TextField, Button, Snackbar, IconButton } from "@material-ui/core";
-import { CloseIcon } from "@material-ui/icons/Close";
+import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { callHelloBackend } from "../../context";
 import { getUserAuthentication } from "../../utils/fetchRequest.js";
-//const fetch = require("../../utils/fetchRequest");
+//import MuiAlert from "@material-ui/lab/Alert";
+import SnackbarAlert from "../snackbar";
+
+/* function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+} */
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,12 +30,18 @@ function Login() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+  const [message, setMessage] = React.useState(undefined);
+  const [severity, setSeverity] = React.useState("");
 
   const [UserLogin, setUserLogin] = React.useState("");
   const [UserPassword, setUserPassword] = React.useState("");
 
-  const toggleIsSnackbarOpen = () => {
-    isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
+  const openSnackbar = () => {
+    setIsSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setIsSnackbarOpen(false);
   };
 
   const handleLogin = async () => {
@@ -39,20 +50,20 @@ function Login() {
       //alert('Before: '+ loginInfo);
       let data = JSON.parse(await getUserAuthentication(loginInfo));
       if (data.status === true) {
-        alert("success");
+        setMessage("Successfully logged in");
+        setSeverity("success");
+        openSnackbar();
         setIsOpen(false);
       } else {
-        console.log('***** inside handle ')
-       // document.getElementById("login_snackbar").message =
-         // "Invalid credentials";
-        //toggleIsSnackbarOpen();
-        alert("failure: " + isSnackbarOpen);
+        setMessage("Invalid credentials");
+        setSeverity("error");
+        openSnackbar();
       }
     } else {
       //alert("Please enter all fields.");
-      //document.getElementById("login_snackbar").message =
-        //"Please enter all fields.";
-      //toggleIsSnackbarOpen();
+      setMessage("Please enter all fields.");
+      setSeverity("error");
+      openSnackbar();
     }
   };
 
@@ -102,28 +113,11 @@ function Login() {
           Cancel
         </Button>
       </div>
-      <Snackbar
-        id="login_snackbar"
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        open={isSnackbarOpen}
-        autoHideDuration={5000}
-        onClose={toggleIsSnackbarOpen}
-        message="Please enter all fields."
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={toggleIsSnackbarOpen}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
+      <SnackbarAlert
+        message={message}
+        severity={severity}
+        isOpen={isSnackbarOpen}
+        close={closeSnackbar}
       />
     </React.Fragment>
   );
