@@ -46,15 +46,14 @@ app.post("/getUserAuthentication", async (req, res) => {
     "UserLogin: " + user.UserLogin + "\nUser Password: " + user.UserPassword
   );
 
-  if(await DB.checkUserExists(user.UserLogin) == 1){
-    console.log("**in auth if")
+  if ((await DB.checkUserExists(user.UserLogin)) == 1) {
+    console.log("**in auth if");
     let auth = await DB.readAuthUser(user.UserLogin, user.UserPassword); // passing in username and password
     console.log("Authentication: " + auth);
-    res.send(JSON.stringify({status:auth, mes: 'Found User!'}));
-}
-  console.log('**Fail.. ')
-  res.send(JSON.stringify({status: false, mes: "Error:user Not Found."}))
-
+    res.send(JSON.stringify({ status: auth, mes: "Found User!" }));
+  }
+  console.log("**Fail.. ");
+  res.send(JSON.stringify({ status: false, mes: "Error:user Not Found." }));
 });
 
 app.get("/", (req, res) => {

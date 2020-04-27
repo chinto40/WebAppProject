@@ -1,16 +1,12 @@
 import React from "react";
 import { OnboardContext } from "./onboardContext";
+import { AppContext } from "../../context";
 import { TextField, Button, Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { callHelloBackend } from "../../context";
 import { getUserAuthentication } from "../../utils/fetchRequest.js";
-//import MuiAlert from "@material-ui/lab/Alert";
 import SnackbarAlert from "../snackbar";
-
-/* function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-} */
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,12 +25,13 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
 
-  const [UserLogin, setUserLogin] = React.useState("");
-  const [UserPassword, setUserPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const openSnackbar = () => {
     setIsSnackbarOpen(true);
@@ -45,14 +42,15 @@ function Login() {
   };
 
   const handleLogin = async () => {
-    if (UserLogin.trim() != "" && UserPassword.trim() != "") {
-      let loginInfo = { UserLogin: UserLogin, UserPassword: UserPassword };
-      //alert('Before: '+ loginInfo);
-      let data = JSON.parse(await getUserAuthentication(loginInfo));
-      if (data.status === true) {
-        setMessage("Successfully logged in");
+    if (username.trim() != "" && password.trim() != "") {
+      let loginInfo = { UserLogin: username, UserPassword: password };
+      let isAuth = JSON.parse(await getUserAuthentication(loginInfo));
+
+      if (isAuth.status === true) {
+        /* setMessage("Successfully logged in");
         setSeverity("success");
-        openSnackbar();
+        openSnackbar(); */
+        setIsUserLoggedIn(true);
         setIsOpen(false);
       } else {
         setMessage("Invalid credentials");
@@ -60,7 +58,6 @@ function Login() {
         openSnackbar();
       }
     } else {
-      //alert("Please enter all fields.");
       setMessage("Please enter all fields.");
       setSeverity("error");
       openSnackbar();
@@ -72,11 +69,11 @@ function Login() {
   };
 
   const handleUsernameChange = (event) => {
-    setUserLogin(event.target.value);
+    setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
-    setUserPassword(event.target.value);
+    setPassword(event.target.value);
   };
 
   return (
@@ -86,7 +83,7 @@ function Login() {
         required
         id="username_login"
         label="Username"
-        value={UserLogin}
+        value={username}
         onChange={handleUsernameChange}
         fullWidth
       />
@@ -95,7 +92,7 @@ function Login() {
         id="password_login"
         label="Password"
         type="password"
-        value={UserPassword}
+        value={password}
         onChange={handlePasswordChange}
         fullWidth
       />
