@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default async function Workouts() {
+export default function Workouts() {
   const classes = useStyles();
-  const workouts = await getAllTheWorkouts();
+  const workouts = getAllTheWorkouts();
   alert(Object.entries(workouts));
   let numWorkouts = Object.entries(workouts).length;
 

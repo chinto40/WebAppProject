@@ -83,6 +83,7 @@ app.all("/test", (req, res) => {
 /*Ready */
 app.get("/GetAllWorkouts", async (req, res) => {
   let workouts = await DB.getAllWorkOuts();
+  console.log("In expressServ: " + workouts);
   res.send(JSON.stringify(workouts));
 });
 //Inserts Workout into the database.. **Ready
@@ -128,11 +129,10 @@ app.post("/setUserWeight", (req, res) => {
   res.sendStatus(200);
 });
 
-
 //**Ready **Checks to see if the usr name is taken before
 app.post("/registerUser", async (req, res) => {
   // TODO: Here we need to set up the Database for a new User..
-   //let test = {LastName: "Drake",FirstName: "Nathan",UserLogin: "ElDorado40",User_Gender: 'M', User_Age: 34 ,UserPassword: "sic parvis magna", Current_Calories: 0,Goal_Calories: 0,Current_Weight: 180,Goal_Weight: 160,Activity_Level: 3,User_Height_Ft: 6,User_Height_In: 2}
+  //let test = {LastName: "Drake",FirstName: "Nathan",UserLogin: "ElDorado40",User_Gender: 'M', User_Age: 34 ,UserPassword: "sic parvis magna", Current_Calories: 0,Goal_Calories: 0,Current_Weight: 180,Goal_Weight: 160,Activity_Level: 3,User_Height_Ft: 6,User_Height_In: 2}
   //let obj = JSON.parse(JSON.stringify(test));
   let obj = JSON.parse(JSON.stringify(req.body));
 
@@ -144,8 +144,6 @@ app.post("/registerUser", async (req, res) => {
   //console.log("Activity Level:[" + obj.Activity_Level + "]");
   //console.log("Gender:[" + obj.User_Gender[0] + "]");
   //console.log("Gender2*:[" + obj.User_Gender + "]");
-
-
 
   if ((await DB.checkUserExists(obj.UserLogin)) == 0) {
     let RealGoalCal = 0;
@@ -170,13 +168,14 @@ app.post("/registerUser", async (req, res) => {
      * - 1000 daily | 7 * 1000 = 7000 weekly = two pounds lost per week..
      */
     //console.log("** 1 GOLCAL: " + RealGoalCal)
-    
+
     if (obj.User_Gender == 1) {
       //M or F
-      RealGoalCal = 
+      RealGoalCal =
         (66 +
           6.3 * Number(obj.Current_Weight) +
-          12.9 * (Number(obj.User_Height_Ft) * 12 + Number(obj.User_Height_In)) -
+          12.9 *
+            (Number(obj.User_Height_Ft) * 12 + Number(obj.User_Height_In)) -
           6.8 * Number(obj.User_Age)) *
         active;
       // -500 for 1 pound a week gonna leave you at 3,500 weekly.
@@ -184,7 +183,7 @@ app.post("/registerUser", async (req, res) => {
       //console.log("** 2M GOLCAL: " + RealGoalCal)
       RealGoalCal -= 1000;
     } else {
-      RealGoalCal = 
+      RealGoalCal =
         (655 +
           4.3 * Number(obj.Current_Weight) +
           4.7 * (Number(obj.User_Height_Ft) * 12 + Number(obj.User_Height_In)) -
@@ -192,10 +191,10 @@ app.post("/registerUser", async (req, res) => {
         active;
       // -500 for 1 pound a week gonna leave you at 3,500 weekly.
       // -1000 daily for 2 pounds a week, will leave you at 7000 less weekly.
-     // console.log("** 2F GOLCAL: " + RealGoalCal)
+      // console.log("** 2F GOLCAL: " + RealGoalCal)
       RealGoalCal -= 1000;
     }
-   // console.log("** 3 GOLCAL: " + RealGoalCal)
+    // console.log("** 3 GOLCAL: " + RealGoalCal)
 
     /*  
       Look at code to render Video
@@ -217,7 +216,7 @@ app.post("/registerUser", async (req, res) => {
     let date = new Date();
     let today =
       date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
-      console.log("Before CheckCreateCalories Line 196");
+    console.log("Before CheckCreateCalories Line 196");
     let i = await DB.CheckCreateCalories(getUser.UserID, today);
     if (i == 0) {
       let dates = new Date();
@@ -236,7 +235,7 @@ app.post("/registerUser", async (req, res) => {
 
     obj.Goal_Calories = parseInt(RealGoalCal);
     console.log("Before InsertIntoUserStat Line 213");
-    console.log("** 4 GOLCAL: " + RealGoalCal)
+    console.log("** 4 GOLCAL: " + RealGoalCal);
     DB.insertIntoUserStat(
       getUser.UserID,
       getUserStat.Calorie_Counter,
@@ -249,7 +248,7 @@ app.post("/registerUser", async (req, res) => {
       obj.User_Gender,
       obj.User_Age
     ); // Getting the userid stored in returnUser into
-    
+
     res.sendStatus(200);
   } else {
     res.sendStatus(400);

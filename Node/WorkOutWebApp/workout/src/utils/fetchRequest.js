@@ -105,7 +105,9 @@ let callHelloBackend = async (name) => {
 };
 
 export let getAllTheWorkouts = () => {
-  return callHelloBackend("GetAllWorkouts"); // Should return a JSON obj
+  let workouts = callHelloBackend("GetAllWorkouts");
+  alert("In fetchRequest: " + workouts);
+  return workouts; // Should return a JSON obj
 };
 
 export let getAllUsers = () => {
