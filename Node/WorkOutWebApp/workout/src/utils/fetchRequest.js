@@ -105,10 +105,10 @@ let callHelloBackend = async (name) => {
 };
 
 export let getAllTheWorkouts = () => {
-  return callHelloBackend("/GetAllWorkouts"); // Should return a JSON obj
+  return callHelloBackend("GetAllWorkouts"); // Should return a JSON obj
 };
 
 export let getAllUsers = () => {
-  return callHelloBackend("/getAllUsers");
+  return callHelloBackend("getAllUsers");
 };
 /**************************END OF GET METHODS ************************ */

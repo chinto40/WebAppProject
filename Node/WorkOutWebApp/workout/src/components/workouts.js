@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Workouts() {
+export default async function Workouts() {
   const classes = useStyles();
-  let workouts = getAllTheWorkouts();
+  const workouts = await getAllTheWorkouts();
+  alert(Object.entries(workouts));
   let numWorkouts = Object.entries(workouts).length;
 
-  function CreateRow() {
+  const CreateCard = ({ workoutName, imgPath }) => {
     return (
       <React.Fragment>
         <Grid item xs marginLeft={4}>
@@ -41,11 +42,11 @@ export default function Workouts() {
               <CardMedia
                 className={classes.media}
                 component="img"
-                image={require("./images/landing_page_1.jpg")}
+                image={require(imgPath)}
               />
               <CardContent>
                 <Typography variant="h5" component="h2">
-                  Workout Name
+                  {workoutName}
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -55,7 +56,7 @@ export default function Workouts() {
           </Card>
         </Grid>
 
-        <Grid item xs>
+        {/* <Grid item xs>
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
@@ -93,16 +94,22 @@ export default function Workouts() {
               <Button size="small">View Details</Button>
             </CardActions>
           </Card>
-        </Grid>
+        </Grid> */}
       </React.Fragment>
     );
-  }
+  };
 
   return (
     <Container maxWidth="lg">
       <div className={classes.root}>
         <Grid container spacing={4} justify="center">
-          <Grid container item xs={24} spacing={4}>
+          {Object.entries(workouts).map((elem) => (
+            <CreateCard
+              name={elem.WorkoutName}
+              imgPath={elem.Workout_ImagePath}
+            />
+          ))}
+          {/* <Grid container item xs={24} spacing={4}>
             <CreateRow />
           </Grid>
           <Grid container item xs={24} spacing={4}>
@@ -110,7 +117,7 @@ export default function Workouts() {
           </Grid>
           <Grid container item xs={24} spacing={4}>
             <CreateRow />
-          </Grid>
+          </Grid> */}
         </Grid>
       </div>
     </Container>
