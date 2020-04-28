@@ -93,6 +93,7 @@ function Registration() {
     for (let [key, value] of Object.entries(errors)) {
       if (value === true) {
         registrationHasErrors = true;
+        alert("Registration errors");
       }
     }
 
@@ -115,15 +116,13 @@ function Registration() {
         UserLogin: username,
         UserPassword: password,
       };
-    
+
       //console.log(registrationInfo);
       //alert(registrationInfo)
-      let registerStatus = JSON.parse(await registerUser((registrationInfo)));
-     
-     alert(registerStatus);
+      let registerStatus = JSON.parse(await registerUser(registrationInfo));
+      alert(registerStatus);
+      setIsOpen(false);
     }
-
-    setIsOpen(false);
   };
 
   const handleClose = () => {
@@ -367,9 +366,7 @@ function Registration() {
       <div className={classes.buttonsDiv}>
         <Button
           className={classes.rightButton}
-          onClick={() => {
-            handleRegistration();
-          }}
+          onClick={handleRegistration}
           color="primary"
         >
           Register

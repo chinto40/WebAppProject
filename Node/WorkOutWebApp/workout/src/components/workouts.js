@@ -12,6 +12,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { getAllTheWorkouts } from "../utils/fetchRequest";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   card: {
-    maxWidth: 345,
+    width: "100%",
   },
   media: {
     height: "auto",
@@ -28,11 +29,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Workouts() {
   const classes = useStyles();
+  let workouts = getAllTheWorkouts();
+  let numWorkouts = Object.entries(workouts).length;
 
   function CreateRow() {
     return (
       <React.Fragment>
-        <Grid item xs>
+        <Grid item xs marginLeft={4}>
           <Card className={classes.card}>
             <CardActionArea>
               <CardMedia
@@ -43,9 +46,6 @@ export default function Workouts() {
               <CardContent>
                 <Typography variant="h5" component="h2">
                   Workout Name
-                </Typography>
-                <Typography variant="body2" component="p">
-                  Workout Description
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -67,9 +67,6 @@ export default function Workouts() {
                 <Typography variant="h5" component="h2">
                   Workout Name
                 </Typography>
-                <Typography variant="body2" component="p">
-                  Workout Description
-                </Typography>
               </CardContent>
             </CardActionArea>
             <CardActions>
@@ -89,9 +86,6 @@ export default function Workouts() {
               <CardContent>
                 <Typography variant="h5" component="h2">
                   Workout Name
-                </Typography>
-                <Typography variant="body2" component="p">
-                  Workout Description
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -107,14 +101,14 @@ export default function Workouts() {
   return (
     <Container maxWidth="lg">
       <div className={classes.root}>
-        <Grid container spacing={2}>
-          <Grid container item xs={12} spacing={2}>
+        <Grid container spacing={4} justify="center">
+          <Grid container item xs={24} spacing={4}>
             <CreateRow />
           </Grid>
-          <Grid container item xs={12} spacing={2}>
+          <Grid container item xs={24} spacing={4}>
             <CreateRow />
           </Grid>
-          <Grid container item xs={12} spacing={2}>
+          <Grid container item xs={24} spacing={4}>
             <CreateRow />
           </Grid>
         </Grid>
@@ -122,3 +116,15 @@ export default function Workouts() {
     </Container>
   );
 }
+
+/* Here are the workout groupIDs 
+Arms: 1
+Back: 2
+Cardio: 3
+Chest: 4
+Core: 5
+LowerBody: 6
+LowerBody(calfs): 7
+LowerBody(Legs): 8
+Shoulder: 9
+*/
