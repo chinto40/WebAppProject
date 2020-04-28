@@ -50,6 +50,7 @@ export const getUserAuthentication = (jsonObj) => {
 export let registerUser = (jsonObj) => {
   // Register User - LastName,FirstName,UserLogin,User_Gender, User_Age,UserPassword, Current_Calories,Goal_Calories,Current_Weight,Goal_Weight,Activity_Level,User_Height_Ft,User_Height_In
   return sendServer("registerUser", jsonObj);
+  //return sendServer("testReg",jsonObj )
 };
 
 export let addCalorieLog = (jsonObj) => {

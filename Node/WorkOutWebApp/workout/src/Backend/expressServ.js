@@ -128,15 +128,27 @@ app.post("/setUserWeight", (req, res) => {
   res.sendStatus(200);
 });
 
+
 //**Ready **Checks to see if the usr name is taken before
 app.post("/registerUser", async (req, res) => {
   // TODO: Here we need to set up the Database for a new User..
-  // let test = {LastName: "Drake",FirstName: "Nathan",UserLogin: "Morgan76",User_Gender: 'M', User_Age: 34 ,UserPassword: "sic parvis magna", Current_Calories: 0,Goal_Calories: 0,Current_Weight: 180,Goal_Weight: 160,Activity_Level: 3,User_Height_Ft: 6,User_Height_In: 2}
+   //let test = {LastName: "Drake",FirstName: "Nathan",UserLogin: "ElDorado40",User_Gender: 'M', User_Age: 34 ,UserPassword: "sic parvis magna", Current_Calories: 0,Goal_Calories: 0,Current_Weight: 180,Goal_Weight: 160,Activity_Level: 3,User_Height_Ft: 6,User_Height_In: 2}
   //let obj = JSON.parse(JSON.stringify(test));
   let obj = JSON.parse(JSON.stringify(req.body));
 
-  let active = 0;
+  let active = 1;
+  //console.log("Weight:[" + Number(obj.Current_Weight) + "]");
+  //console.log("Userlogin:[" + obj.UserLogin + "]");
+  //console.log("User Height FT:[" + Number(obj.User_Height_Ft) + "]");
+  //console.log("User Height IN:[" + obj.User_Height_In + "]");
+  //console.log("Activity Level:[" + obj.Activity_Level + "]");
+  //console.log("Gender:[" + obj.User_Gender[0] + "]");
+  //console.log("Gender2*:[" + obj.User_Gender + "]");
+
+
+
   if ((await DB.checkUserExists(obj.UserLogin)) == 0) {
+    let RealGoalCal = 0;
     // if user doesnt exist then it will create one...  Check...
     switch (obj.Activity_Level) {
       case 0: // Little to no Exersice
@@ -157,28 +169,42 @@ app.post("/registerUser", async (req, res) => {
      * - 500 daily | 7*500 = 3500 weekly = one pound lost per week..
      * - 1000 daily | 7 * 1000 = 7000 weekly = two pounds lost per week..
      */
-    if (obj.User_Gender == "M") {
+    //console.log("** 1 GOLCAL: " + RealGoalCal)
+    
+    if (obj.User_Gender == 1) {
       //M or F
-      obj.Goal_Calories =
+      RealGoalCal = 
         (66 +
-          6.3 * obj.Current_Weight +
-          12.9 * (obj.User_Height_Ft * 12 + obj.User_Height_In) -
-          6.8 * obj.User_Age) *
+          6.3 * Number(obj.Current_Weight) +
+          12.9 * (Number(obj.User_Height_Ft) * 12 + Number(obj.User_Height_In)) -
+          6.8 * Number(obj.User_Age)) *
         active;
       // -500 for 1 pound a week gonna leave you at 3,500 weekly.
       // -1000 daily for 2 pounds a week, will leave you at 7000 less weekly.
-      obj.Goal_Calories -= 1000;
+      //console.log("** 2M GOLCAL: " + RealGoalCal)
+      RealGoalCal -= 1000;
     } else {
-      obj.Goal_Calories =
+      RealGoalCal = 
         (655 +
-          4.3 * obj.Current_Weight +
-          4.7 * (obj.User_Height_Ft * 12 + obj.User_Height_In) -
-          4.7 * obj.UserAge) *
+          4.3 * Number(obj.Current_Weight) +
+          4.7 * (Number(obj.User_Height_Ft) * 12 + Number(obj.User_Height_In)) -
+          4.7 * Number(obj.User_Age)) *
         active;
       // -500 for 1 pound a week gonna leave you at 3,500 weekly.
       // -1000 daily for 2 pounds a week, will leave you at 7000 less weekly.
-      obj.Goal_Calories -= 1000;
+     // console.log("** 2F GOLCAL: " + RealGoalCal)
+      RealGoalCal -= 1000;
     }
+   // console.log("** 3 GOLCAL: " + RealGoalCal)
+
+    /*  
+      Look at code to render Video
+      Look at Attack Script  URl encoding in http
+      Alert in javasctipt = use the alert in attaack script js lib call js-override.js
+        old will hook on to certainfunction and wil have some major to restict cross script att
+        but will have to find another way to generate an alert.. 
+
+    */
     await DB.insertIntoUser(
       obj.LastName,
       obj.FirstName,
@@ -191,6 +217,7 @@ app.post("/registerUser", async (req, res) => {
     let date = new Date();
     let today =
       date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
+      console.log("Before CheckCreateCalories Line 196");
     let i = await DB.CheckCreateCalories(getUser.UserID, today);
     if (i == 0) {
       let dates = new Date();
@@ -203,21 +230,26 @@ app.post("/registerUser", async (req, res) => {
         dates.getFullYear(); // MM-DD-YYYY
       await DB.InsertUserCalories(getUser.UserID, today, 0);
     }
+    console.log("Before GetUSerCalories Line 208");
     let getUserStats = await DB.getUserCalories(getUser.UserID, today);
     let getUserStat = JSON.parse(getUserStats);
 
+    obj.Goal_Calories = parseInt(RealGoalCal);
+    console.log("Before InsertIntoUserStat Line 213");
+    console.log("** 4 GOLCAL: " + RealGoalCal)
     DB.insertIntoUserStat(
       getUser.UserID,
       getUserStat.Calorie_Counter,
-      obj.Goal_Calories,
+      RealGoalCal.valueOf(),
       obj.Current_Weight,
       obj.Goal_Weight,
-      obj.Acticity_Level,
+      obj.Activity_Level,
       obj.User_Height_Ft,
       obj.User_Height_In,
       obj.User_Gender,
       obj.User_Age
     ); // Getting the userid stored in returnUser into
+    
     res.sendStatus(200);
   } else {
     res.sendStatus(400);

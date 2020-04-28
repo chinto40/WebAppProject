@@ -208,14 +208,15 @@ const http = require('http')
      * Going to check if a User exists.. If you user exsit then reject the username upon creation.. 
     */
     router.checkUserExists = (UserLogin) =>{
-        console.log('Inside funtion: '+UserLogin)
+        //console.log('Inside funtion: '+UserLogin)
         return new Promise(function(resolve, reject){
-            con.query("Select EXISTS(Select * from users WHERE UserLogin = ?)",UserLogin,(err,data)=>{
+            con.query("Select EXISTS (Select * from users WHERE UserLogin = ?)",UserLogin,(err,data)=>{
                 if(err){
                     reject(err);
                 }
+               // console.log(JSON.stringify(data)+"***\n"  + JSON.stringify(data[0]));
                 data.forEach(element => {
-                     resolve(data[0]["EXISTS(Select * from users WHERE UserLogin = '"+UserLogin+"')"]);
+                     resolve(data[0]["EXISTS (Select * from users WHERE UserLogin = '"+UserLogin+"')"]);
                 });
             })
         })

@@ -115,8 +115,12 @@ function Registration() {
         UserLogin: username,
         UserPassword: password,
       };
-      let registerStatus = JSON.parse(await registerUser(registrationInfo));
-      alert(registerStatus);
+    
+      //console.log(registrationInfo);
+      //alert(registrationInfo)
+      let registerStatus = JSON.parse(await registerUser((registrationInfo)));
+     
+     alert(registerStatus);
     }
 
     setIsOpen(false);
