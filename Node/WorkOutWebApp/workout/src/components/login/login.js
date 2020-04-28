@@ -45,7 +45,7 @@ function Login() {
     if (username.trim() != "" && password.trim() != "") {
       let loginInfo = { UserLogin: username, UserPassword: password };
       let isAuth = JSON.parse(await getUserAuthentication(loginInfo));
-
+      
       if (isAuth.status === true) {
         /* setMessage("Successfully logged in");
         setSeverity("success");

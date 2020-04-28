@@ -91,17 +91,20 @@ let sendServer = (fetchName, jsonObj) => {
 
 /**************************START OF GET METHODS ************************ */
 
-let callHelloBackend = async (name) => {
-  const response = await fetch("/" + name); // use fetch to connect to backend
-  const body = await response.json();
+let callHelloBackend = (name) => {
+  return new Promise(function(resolve,reject){
+     const response = fetch("/" + name); // use fetch to connect to backend
+      console.log('\n\n**: ' + response + '\n\n**')
+     const body =  JSON.parse(response);
   //console.log('Here in the body'+body.json.status)
-  alert(body);
+  //alert(body);
   if (response.status !== 200) {
-    throw Error(body.Error);
+    reject(body.Error);
   }
   //alert("after Error");
   //this.setState({ data: body.Hello });
-  return body; // IDk how to test this.. or send it as String or if it works by just returning JSON object.
+  resolve(JSON.stringify(body)); // IDk how to test this.. or send it as String or if it works by just returning JSON object.
+})
 };
 
 export let getAllTheWorkouts = () => {
