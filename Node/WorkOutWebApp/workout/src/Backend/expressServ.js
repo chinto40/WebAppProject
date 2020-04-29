@@ -53,10 +53,10 @@ app.post("/getUserAuthentication", async (req, res) => {
     res.send(JSON.stringify({ status: auth, mes: "Found User!" }));
     res.end();
     //console.log("Shouldnt reach here");
-  }else{
+  } else {
     console.log("**Fail.. ");
     res.send(JSON.stringify({ status: false, mes: "Error:user Not Found." }));
-}
+  }
 });
 
 app.get("/", (req, res) => {
@@ -86,9 +86,9 @@ app.all("/test", (req, res) => {
 /*Ready */
 app.get("/GetAllWorkouts", async (req, res) => {
   let workouts = JSON.parse(await DB.getAllWorkOuts());
-  console.log("In expressServ: " + workouts);
+  console.log("In expressServ: " + Object.keys(workouts));
   //res.status = 200;
-  res.send(JSON.stringify(workouts));
+  res.send(workouts);
   //return (workouts)
   //res.end;
 });
@@ -255,13 +255,13 @@ app.post("/registerUser", async (req, res) => {
       obj.User_Age
     ); // Getting the userid stored in returnUser into
 
-   // res.sendStatus(200);
-   res.send(JSON.stringify({status: true,msg: 'Success!'})) 
-   res.end()
+    // res.sendStatus(200);
+    res.send(JSON.stringify({ status: true, msg: "Success!" }));
+    res.end();
   } else {
     //res.sendStatus(400);
-    res.send(JSON.stringify({status: false,msg: 'Success!'})) 
-    res.end()
+    res.send(JSON.stringify({ status: false, msg: "Success!" }));
+    res.end();
   }
 });
 

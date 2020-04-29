@@ -91,24 +91,28 @@ let sendServer = (fetchName, jsonObj) => {
 
 /**************************START OF GET METHODS ************************ */
 
-let callHelloBackend =  (name) => {
- // alert("before Promise")
-  return new Promise( function(resolve,reject){
-        //alert("before Getter")
-        fetch("/" + name).then((data) =>{ // use fetch to connect to backend
-         // alert('\n\n**: ' + JSON.stringify(data) + '\n\n**')
-           data.json().then((data)=>{
-           resolve((data)); // IDk how to test this.. or send it as String or if it works by just returning JSON object. 
-          });
-    }).catch((error) =>{
-      reject(error)
-    })
-  })
+let callHelloBackend = (name) => {
+  // alert("before Promise")
+  return new Promise(function (resolve, reject) {
+    //alert("before Getter")
+    fetch("/" + name)
+      .then((data) => {
+        // use fetch to connect to backend
+        //alert("\n\n**: " + Object.keys(data) + "\n\n**");
+        data.json().then((data) => {
+          alert("In callHelloBackend: " + Object.keys(data));
+          resolve(data); // IDk how to test this.. or send it as String or if it works by just returning JSON object.
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 
-export let getAllTheWorkouts =  () => {
-  let workouts =  callHelloBackend("GetAllWorkouts");
-  alert("In fetchRequest: " + JSON.stringify(workouts));
+export let getAllTheWorkouts = async () => {
+  let workouts = await callHelloBackend("GetAllWorkouts");
+  alert("In fetch: " + Object.keys(workouts));
   return workouts; // Should return a JSON obj
 };
 

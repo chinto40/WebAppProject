@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MenuBar from "./menu_bar";
 import {
   Container,
@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getAllTheWorkouts } from "../utils/fetchRequest";
+import { getWorkout } from "../Backend/DataManipulation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,14 +28,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default async function Workouts() {
+const Workouts = async () => {
   const classes = useStyles();
+  //const [numWorkouts, setNumWorkouts] = React.useState(null);
+  //const [workouts, setWorkouts] = React.useState();
   const workouts = await getAllTheWorkouts();
-  alert('After call: ' + JSON.stringify(workouts))
-  alert(Object.entries(workouts));
-  let numWorkouts = Object.entries(workouts).length;
+
+  /* useEffect(async () => {
+    const workouts = await getAllTheWorkouts()
+      .then((data) => setWorkouts(data))
+      .then((data) => setNumWorkouts(Object.keys(workouts).length));
+    alert("In getWorkouts: " + Object.keys(workouts));
+    return workouts;
+  }); */
+
+  //const [workout, setWorkout] = React.useState(null);
+  //const [image, setImage] = React.useState(null);
+  //alert("After call: " + workouts);
+  //alert(Object.entries(workouts));
+  /* const [numWorkouts, setNumWorkouts] = React.useState(
+    Object.keys(workouts).length
+  ); */
+  alert("In Workouts: " + Object.keys(workouts));
+
+  const createCard = () => {
+    /* Object.keys(workouts).map((key) => (
+      <NewCard
+        workoutName={workouts[key]["Workout_Name"]}
+        imgPath={workouts[key]["Workout_ImagePath"]}
+      />
+    )); */
+    //let workout = workouts[key]["Workout_Name"];
+    //let image = workouts[key]["Workout_ImagePath"];
+    /* Object.keys(workouts[key]).map((elem) => (elem) => (
+      (workout = elem === "Workout_Name" ? workouts[key][elem] : null),
+      (image = elem === "Workout_ImagePath" ? workouts[key][elem] : null),
+    )); */
+    //alert(workout + " " + image);
+  };
 
   const CreateCard = ({ workoutName, imgPath }) => {
+    //alert(workoutName, imgPath);
     return (
       <React.Fragment>
         <Grid item xs marginLeft={4}>
@@ -43,11 +77,11 @@ export default async function Workouts() {
               <CardMedia
                 className={classes.media}
                 component="img"
-                image={require(imgPath)}
+                image={require("./images/landing_page_1.jpg")}
               />
               <CardContent>
                 <Typography variant="h5" component="h2">
-                  {workoutName}
+                  Workout Name
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -104,26 +138,38 @@ export default async function Workouts() {
     <Container maxWidth="lg">
       <div className={classes.root}>
         <Grid container spacing={4} justify="center">
-          {Object.entries(workouts).map((elem) => (
-            <CreateCard
-              name={elem.WorkoutName}
-              imgPath={elem.Workout_ImagePath}
-            />
-          ))}
           {/* <Grid container item xs={24} spacing={4}>
-            <CreateRow />
-          </Grid>
-          <Grid container item xs={24} spacing={4}>
-            <CreateRow />
-          </Grid>
-          <Grid container item xs={24} spacing={4}>
-            <CreateRow />
+            {Object.keys(workouts).map((key) => (
+              <NewCard
+                workoutName={workouts[key]["Workout_Name"]}
+                imgPath={workouts[key]["Workout_ImagePath"]}
+              />
+            ))}
           </Grid> */}
+          {numWorkouts > 0 ? (
+            <Grid container item xs={24} spacing={4}>
+              <CreateCard />
+              <CreateCard />
+              <CreateCard />
+            </Grid>
+          ) : null}
+          <Grid container item xs={24} spacing={4}>
+            <CreateCard />
+            <CreateCard />
+            <CreateCard />
+          </Grid>
+          <Grid container item xs={24} spacing={4}>
+            <CreateCard />
+            <CreateCard />
+            <CreateCard />
+          </Grid>
         </Grid>
       </div>
     </Container>
   );
-}
+};
+
+export default Login;
 
 /* Here are the workout groupIDs 
 Arms: 1
