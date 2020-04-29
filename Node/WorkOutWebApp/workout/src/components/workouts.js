@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MenuBar from "./menu_bar";
 import {
   Container,
@@ -13,7 +13,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getAllTheWorkouts } from "../utils/fetchRequest";
-import { getWorkout } from "../Backend/DataManipulation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,11 +27,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Workouts = async () => {
+const Workouts = () => {
   const classes = useStyles();
   //const [numWorkouts, setNumWorkouts] = React.useState(null);
   //const [workouts, setWorkouts] = React.useState();
-  const workouts = await getAllTheWorkouts();
+  const workouts = getAllTheWorkouts();
+  const numWorkouts = Object.keys(workouts).length;
 
   /* useEffect(async () => {
     const workouts = await getAllTheWorkouts()
@@ -169,7 +169,7 @@ const Workouts = async () => {
   );
 };
 
-export default Login;
+export default Workouts;
 
 /* Here are the workout groupIDs 
 Arms: 1
