@@ -11,7 +11,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactMinimalPieChart from "react-minimal-pie-chart";
@@ -19,43 +19,50 @@ import { mergeClasses } from "@material-ui/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker
+  KeyboardDatePicker,
 } from "@material-ui/pickers";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   card: {
     padding: theme.spacing(2),
-    textAlign: "left"
+    textAlign: "left",
   },
   textLeft: {
     marginTop: theme.spacing(2),
     WebkitTextFillColor: "#47443B",
-    textAlign: "left"
+    textAlign: "left",
   },
   textCenter: {
     marginTop: theme.spacing(2),
     WebkitTextFillColor: "#47443B",
-    textAlign: "center"
+    textAlign: "center",
   },
   textOrange: {
     WebkitTextFillColor: "#E38627",
-    textAlign: "left"
+    textAlign: "left",
   },
   buttonRight: {
-    marginLeft: "auto"
-  }
+    marginLeft: "auto",
+  },
 }));
 
 export default function UserDashboard() {
   const classes = useStyles();
-  const currWeight = 250;
-  const goalWeight = 220;
-  const currCaloriesLogged = 1440;
-  const goalCalories = 2000;
-  const percentageCalories = (currCaloriesLogged / goalCalories) * 100;
+  // These are the old variables
+  //const currWeight = 250;
+  //const goalWeight = 220;
+  //const currCaloriesLogged = 1440;
+  //const goalCalories = 2000;
+
+  // These are the new variables
+  const [currWeight, setCurrWeight] = React.useState();
+  const [goalWeight, setGoalWeight] = React.useState();
+  const [currCaloriesLogged, setCurrCaloriesLogged] = React.useState();
+  const [goalCalories, setGoalCalories] = React.useState();
+
   const [logWeightOpen, setLogWeightOpen] = React.useState(false);
   const [logCaloriesOpen, setLogCaloriesOpen] = React.useState(false);
   const [selectedDateWeightLog, setSelectedDateWeightLog] = React.useState(
@@ -64,6 +71,8 @@ export default function UserDashboard() {
   const [selectedDateCalorieLog, setSelectedDateCalorieLog] = React.useState(
     new Date()
   );
+
+  const percentageCalories = (currCaloriesLogged / goalCalories) * 100;
 
   const handleLogWeightOpen = () => {
     setLogWeightOpen(true);
@@ -81,11 +90,11 @@ export default function UserDashboard() {
     setLogCaloriesOpen(false);
   };
 
-  const handleCalorieDateChange = date => {
+  const handleCalorieDateChange = (date) => {
     selectedDateCalorieLog(date);
   };
 
-  const handleWeightDateChange = date => {
+  const handleWeightDateChange = (date) => {
     selectedDateWeightLog(date);
   };
 
@@ -111,14 +120,14 @@ export default function UserDashboard() {
                 data={[
                   {
                     color: "#E38627",
-                    value: percentageCalories
-                  }
+                    value: percentageCalories,
+                  },
                 ]}
                 label
                 labelPosition={0}
                 labelStyle={{
                   fontFamily: "sans-serif",
-                  fontSize: "25px"
+                  fontSize: "25px",
                 }}
                 lengthAngle={360}
                 lineWidth={20}
@@ -213,7 +222,7 @@ export default function UserDashboard() {
               value={selectedDateWeightLog}
               onChange={handleWeightDateChange}
               KeyboardButtonProps={{
-                "aria-label": "change weight date"
+                "aria-label": "change weight date",
               }}
             />
           </MuiPickersUtilsProvider>
@@ -243,7 +252,7 @@ export default function UserDashboard() {
               value={selectedDateCalorieLog}
               onChange={handleCalorieDateChange}
               KeyboardButtonProps={{
-                "aria-label": "change calorie date"
+                "aria-label": "change calorie date",
               }}
             />
           </MuiPickersUtilsProvider>
