@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { OnboardContext } from "./onboardContext";
-import {
-  TextField,
-  Button,
-  Snackbar,
-  SnackbarContent,
-} from "@material-ui/core";
+import { AppContext } from "../../context";
+import { TextField, Button, Snackbar, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { callHelloBackend } from "../../context";
+import { getUserAuthentication } from "../../utils/fetchRequest.js";
+import SnackbarAlert from "../snackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,29 +25,42 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
-  const { isSnackbarOpen, setIsSnackbarOpen } = React.useState(false);
+  const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
+  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+  const [message, setMessage] = React.useState(undefined);
+  const [severity, setSeverity] = React.useState("");
 
-  const [UserLogin, setUserLogin] = React.useState("");
-  const [UserPassword, setUserPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  const handleLogin = () => {
-    if (UserLogin.trim() != "" && UserPassword.trim() != "") {
-      // call login function here
-      //npcallHelloBackend();
-      alert(UserLogin.trim() === "string");
-      //console.log("username: " + UserLogin + ", password: " + UserPassword);
-      alert("All good!");
-      setIsOpen(false);
+  const openSnackbar = () => {
+    setIsSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setIsSnackbarOpen(false);
+  };
+
+  const handleLogin = async () => {
+    if (username.trim() != "" && password.trim() != "") {
+      let loginInfo = { UserLogin: username, UserPassword: password };
+      let isAuth = JSON.parse(await getUserAuthentication(loginInfo));
+      
+      if (isAuth.status === true) {
+        /* setMessage("Successfully logged in");
+        setSeverity("success");
+        openSnackbar(); */
+        setIsUserLoggedIn(true);
+        setIsOpen(false);
+      } else {
+        setMessage("Invalid credentials");
+        setSeverity("error");
+        openSnackbar();
+      }
     } else {
-      alert("Please enter all fields.");
-      //alert(typeof UserLogin.trim() === "string");
-      return {
-        /* <Snackbar
-          open={isSnackbarOpen}
-          onClose={toggleIsSnackbarOpen}
-          message="Please enter all fields."
-        /> */
-      };
+      setMessage("Please enter all fields.");
+      setSeverity("error");
+      openSnackbar();
     }
   };
 
@@ -57,15 +69,11 @@ function Login() {
   };
 
   const handleUsernameChange = (event) => {
-    setUserLogin(event.target.value);
+    setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
-    setUserPassword(event.target.value);
-  };
-
-  const toggleIsSnackbarOpen = () => {
-    isSnackbarOpen ? setIsSnackbarOpen(false) : setIsSnackbarOpen(true);
+    setPassword(event.target.value);
   };
 
   return (
@@ -75,7 +83,7 @@ function Login() {
         required
         id="username_login"
         label="Username"
-        value={UserLogin}
+        value={username}
         onChange={handleUsernameChange}
         fullWidth
       />
@@ -84,7 +92,7 @@ function Login() {
         id="password_login"
         label="Password"
         type="password"
-        value={UserPassword}
+        value={password}
         onChange={handlePasswordChange}
         fullWidth
       />
@@ -102,6 +110,12 @@ function Login() {
           Cancel
         </Button>
       </div>
+      <SnackbarAlert
+        message={message}
+        severity={severity}
+        isOpen={isSnackbarOpen}
+        close={closeSnackbar}
+      />
     </React.Fragment>
   );
 }

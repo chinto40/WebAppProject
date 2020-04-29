@@ -104,7 +104,7 @@ const http = require('http')
     router.registerUser= async (user) =>{
        let prom = await new Promise( function(reject,resolve){
         
-        insertIntoUser(user.LastName,user.firstname,user.userLog,user.password)
+        //insertIntoUser(user.LastName,user.firstname,user.userLog,user.password)
         resolve({status:true,userID: getUserID(user.UserLog)})
        })
       /* if(prom.status == true){
@@ -183,7 +183,7 @@ const http = require('http')
     router.insertWorkoutImage = (WorkoutName, WorkoutGroupID, Path)=>{
         con.query('Insert into WorkOut_Object (Workout_Name, Workout_GroupID,Workout_ImagePath) VALUES(? , ?, ?)', [WorkoutName,WorkoutGroupID,Path], (err,data)=>{
             if(err){
-                reject(err);
+                throw (err);
             }
             //else Query Should run and insert.. 
         })
@@ -208,14 +208,15 @@ const http = require('http')
      * Going to check if a User exists.. If you user exsit then reject the username upon creation.. 
     */
     router.checkUserExists = (UserLogin) =>{
-        console.log('Inside funtion: '+UserLogin)
+        //console.log('Inside funtion: '+UserLogin)
         return new Promise(function(resolve, reject){
-            con.query("Select EXISTS(Select * from users WHERE UserLogin = ?)",UserLogin,(err,data)=>{
+            con.query("Select EXISTS (Select * from users WHERE UserLogin = ?)",UserLogin,(err,data)=>{
                 if(err){
                     reject(err);
                 }
+               // console.log(JSON.stringify(data)+"***\n"  + JSON.stringify(data[0]));
                 data.forEach(element => {
-                     resolve(data[0]["EXISTS(Select * from users WHERE UserLogin = '"+UserLogin+"')"]);
+                     resolve(data[0]["EXISTS (Select * from users WHERE UserLogin = '"+UserLogin+"')"]);
                 });
             })
         })
@@ -267,6 +268,7 @@ const http = require('http')
                 if(err){
                     reject(err);
                 }
+                console.log("Workouts: " + JSON.stringify(data))
                 resolve(JSON.stringify(data));
             })
         })

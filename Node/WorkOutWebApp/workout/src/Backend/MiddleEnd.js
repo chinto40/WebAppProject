@@ -1,11 +1,9 @@
-const DB = require('./DataManipulation.js')
 
-let mid =()=>{
-    console.log('Hellow')
+let test = "\"123\""
+let l = {Test: "\"123\""};
+console.log("varaible is: "+ " len:"+ test.length + ": "+ parseInt(test.slice(1,test.length-1)))
 
-}
-
-
+console.log("varaible is: "+ " len:"+  + ": "+ parseInt(test.slice(1,test.length-1)))
 
 /*  Here the getter syntax for get api call...
 comp(func) {

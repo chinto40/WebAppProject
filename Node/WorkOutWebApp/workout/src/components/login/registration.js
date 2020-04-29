@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { OnboardContext } from "./onboardContext";
-import { callHelloBackend } from "../../context";
+import { registerUser } from "../../utils/fetchRequest.js";
 import {
   validateUsername,
   validatePassword,
@@ -24,6 +24,8 @@ import {
   validateActivityLevel,
   validateGender,
 } from "../../utils/validator";
+import SnackbarAlert from "../snackbar";
+import { AppContext } from "../../context";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,25 +64,73 @@ const useStyles = makeStyles((theme) => ({
 function Registration() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
-  const { isSnackbarOpen, setIsSnackbarOpen } = React.useState(false);
+  const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
+  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+  const [message, setMessage] = React.useState(undefined);
+  const [severity, setSeverity] = React.useState("");
 
-  const [FirstName, setFirstName] = React.useState("");
-  const [LastName, setLastName] = React.useState("");
-  const [User_Gender, setUser_Gender] = React.useState(null);
-  const [User_Age, setUser_Age] = React.useState(null);
-  const [User_Height_Ft, setUser_Height_Ft] = React.useState(null);
-  const [User_Height_In, setUser_Height_In] = React.useState(null);
-  const [Current_Weight, setCurrent_Weight] = React.useState(null);
-  const [Activity_Level, setActivity_Level] = React.useState(null);
-  const [Goal_Weight, setGoal_Weight] = React.useState(null);
-  const [UserLogin, setUserLogin] = React.useState("");
-  const [UserPassword, setUserPassword] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [gender, setGender] = React.useState(null);
+  const [age, setAge] = React.useState(null);
+  const [heightFt, setHeightFt] = React.useState(null);
+  const [heightIn, setHeightIn] = React.useState(null);
+  const [currentWeight, setCurrentWeight] = React.useState(null);
+  const [activityLevel, setActivityLevel] = React.useState(null);
+  const [goalWeight, setGoalWeight] = React.useState(null);
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
 
-  const handleRegistration = () => {
-    // call registration function here
-    callHelloBackend();
-    setIsOpen(false);
+  const openSnackbar = () => {
+    setIsSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setIsSnackbarOpen(false);
+  };
+
+  const handleRegistration = async () => {
+    let registrationHasErrors = false;
+    for (let [key, value] of Object.entries(errors)) {
+      if (value === true) {
+        registrationHasErrors = true;
+        //alert("Registration errors");
+      }
+    }
+
+    if (registrationHasErrors) {
+      setMessage("Please enter valid information for all fields.");
+      setSeverity("error");
+      openSnackbar();
+    } else {
+      // call registration function
+      let registrationInfo = {
+        FirstName: firstName,
+        LastName: lastName,
+        User_Gender: gender,
+        User_Age: age,
+        User_Height_Ft: heightFt,
+        User_Height_In: heightIn,
+        Current_Weight: currentWeight,
+        Activity_Level: activityLevel,
+        Goal_Weight: goalWeight,
+        UserLogin: username,
+        UserPassword: password,
+      };
+
+      //console.log(registrationInfo);
+      //alert(registrationInfo)
+      let registerStatus = JSON.parse(await registerUser(registrationInfo));
+      if (registerStatus["status"] === true) {
+        setIsUserLoggedIn(true);
+        setIsOpen(false);
+      } else {
+        setMessage("Unable to register.");
+        setSeverity("error");
+        openSnackbar();
+      }
+    }
   };
 
   const handleClose = () => {
@@ -90,50 +140,42 @@ function Registration() {
   const handleFirstNameChange = (event) => {
     let isError = validateFirstName(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    if (!isError) {
-      setFirstName(event.target.value);
-    }
+    setFirstName(event.target.value);
   };
 
   const handleLastNameChange = (event) => {
     let isError = validateLastName(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    if (!isError) {
-      setLastName(event.target.value);
-    }
+    setLastName(event.target.value);
   };
 
-  const handleUserGenderChange = (event) => {
+  const handleGenderChange = (event) => {
     let isError = validateGender(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
     if (isError) {
       document.getElementById("gender_label").style.color = "red";
     } else {
-      setUser_Gender(event.target.value);
+      setGender(event.target.value);
       document.getElementById("gender_label").style = classes.height;
     }
   };
 
-  const handleUserAgeChange = (event) => {
+  const handleAgeChange = (event) => {
     let isError = validateAge(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    if (!isError) {
-      setUser_Age(event.target.value);
-    }
+    setAge(event.target.value);
   };
 
   const handleUsernameChange = (event) => {
     let isError = validateUsername(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    if (!isError) {
-      setUserLogin(event.target.value);
-    }
+    setUsername(event.target.value);
   };
 
-  const handleUserHeightFtChange = (event) => {
+  const handleHeightFtChange = (event) => {
     let isError = validateHeightFt(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    setUser_Height_Ft(event.target.value);
+    setHeightFt(event.target.value);
     if (isError) {
       document.getElementById("height_ft_label").style.color = "red";
     } else {
@@ -141,10 +183,10 @@ function Registration() {
     }
   };
 
-  const handleUserHeightInChange = (event) => {
+  const handleHeightInChange = (event) => {
     let isError = validateHeightIn(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    setUser_Height_In(event.target.value);
+    setHeightIn(event.target.value);
     if (isError) {
       document.getElementById("height_in_label").style.color = "red";
     } else {
@@ -155,7 +197,7 @@ function Registration() {
   const handleCurrentWeightChange = (event) => {
     let isError = validateWeight(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    setCurrent_Weight(event.target.value);
+    setCurrentWeight(event.target.value);
     if (isError) {
       document.getElementById("weight_label").style.color = "red";
     } else {
@@ -163,13 +205,13 @@ function Registration() {
     }
   };
 
-  const handleActivity_LevelChange = (event) => {
+  const handleActivityLevelChange = (event) => {
     let isError = validateActivityLevel(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
     if (isError) {
       document.getElementById("activity_level_label").style.color = "red";
     } else {
-      setActivity_Level(event.target.value);
+      setActivityLevel(event.target.value);
       document.getElementById("activity_level_label").style = classes.height;
     }
   };
@@ -177,10 +219,10 @@ function Registration() {
   const handleGoalWeightChange = (event) => {
     let isError = validateWeight(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
+    setGoalWeight(event.target.value);
     if (isError) {
       document.getElementById("goal_weight_label").style.color = "red";
     } else {
-      setGoal_Weight(event.target.value);
       document.getElementById("goal_weight_label").style = classes.height;
     }
   };
@@ -188,9 +230,7 @@ function Registration() {
   const handlePasswordChange = (event) => {
     let isError = validatePassword(event.target.value) ? false : true;
     handleErrorCheck(event.target.id, isError);
-    if (!isError) {
-      setUserPassword(event.target.value);
-    }
+    setPassword(event.target.value);
   };
 
   const toggleIsSnackbarOpen = () => {
@@ -209,7 +249,7 @@ function Registration() {
         required
         id="first_name"
         label="First Name"
-        value={FirstName}
+        value={firstName}
         onChange={handleFirstNameChange}
         className={classes.halfLeft}
         error={errors["first_name"]}
@@ -219,7 +259,7 @@ function Registration() {
         required
         id="last_name"
         label="Last Name"
-        value={LastName}
+        value={lastName}
         onChange={handleLastNameChange}
         className={classes.halfRight}
         error={errors["last_name"]}
@@ -229,11 +269,11 @@ function Registration() {
         <InputLabel id="gender_label">Gender</InputLabel>
         <Select
           id="gender"
-          value={User_Gender}
+          value={gender}
           label="gender_label"
-          onChange={handleUserGenderChange}
+          onChange={handleGenderChange}
           error={errors["gender"]}
-          onBlur={handleUserGenderChange}
+          onBlur={handleGenderChange}
         >
           <MenuItem value={0}>Female</MenuItem>
           <MenuItem value={1}>Male</MenuItem>
@@ -244,11 +284,11 @@ function Registration() {
         <Input
           id="height_ft"
           label="Height"
-          value={User_Height_Ft}
-          onChange={handleUserHeightFtChange}
+          value={heightFt}
+          onChange={handleHeightFtChange}
           error={errors["height_ft"]}
           endAdornment={<InputAdornment position="end">ft</InputAdornment>}
-          onBlur={handleUserHeightFtChange}
+          onBlur={handleHeightFtChange}
         />
       </FormControl>
       <FormControl required className={classes.height}>
@@ -256,10 +296,10 @@ function Registration() {
         <Input
           id="height_in"
           label="Height"
-          value={User_Height_In}
-          onChange={handleUserHeightInChange}
+          value={heightIn}
+          onChange={handleHeightInChange}
           error={errors["height_in"]}
-          onBlur={handleUserHeightInChange}
+          onBlur={handleHeightInChange}
           endAdornment={<InputAdornment position="end">in</InputAdornment>}
         />
       </FormControl>
@@ -267,17 +307,17 @@ function Registration() {
         required
         id="age"
         label="Age"
-        value={User_Age}
-        onChange={handleUserAgeChange}
+        value={age}
+        onChange={handleAgeChange}
         error={errors["age"]}
         className={classes.halfLeft}
-        onBlur={handleUserAgeChange}
+        onBlur={handleAgeChange}
       />
       <FormControl required className={classes.halfRight}>
         <InputLabel id="weight_label">Weight</InputLabel>
         <Input
           id="weight"
-          value={Current_Weight}
+          value={currentWeight}
           onChange={handleCurrentWeightChange}
           error={errors["weight"]}
           onBlur={handleCurrentWeightChange}
@@ -288,10 +328,10 @@ function Registration() {
         <InputLabel id="activity_level_label">Activity Level</InputLabel>
         <Select
           id="activity_level"
-          value={Activity_Level}
-          onChange={handleActivity_LevelChange}
+          value={activityLevel}
+          onChange={handleActivityLevelChange}
           error={errors["activity_level"]}
-          onBlur={handleActivity_LevelChange}
+          onBlur={handleActivityLevelChange}
         >
           <MenuItem value={0}>Little to no exercise</MenuItem>
           <MenuItem value={1}>Exercise 1 - 3 times/week</MenuItem>
@@ -303,7 +343,7 @@ function Registration() {
         <InputLabel id="goal_weight_label">Goal Weight</InputLabel>
         <Input
           id="goal_weight"
-          value={Goal_Weight}
+          value={goalWeight}
           onChange={handleGoalWeightChange}
           error={errors["goal_weight"]}
           onBlur={handleGoalWeightChange}
@@ -314,7 +354,7 @@ function Registration() {
         required
         id="username_reg"
         label="Username"
-        value={UserLogin}
+        value={username}
         onChange={handleUsernameChange}
         error={errors["username_reg"]}
         onBlur={handleUsernameChange}
@@ -324,7 +364,8 @@ function Registration() {
         required
         id="password_reg"
         label="Password"
-        value={UserPassword}
+        type="password"
+        value={password}
         onChange={handlePasswordChange}
         error={errors["password_reg"]}
         onBlur={handlePasswordChange}
@@ -333,9 +374,7 @@ function Registration() {
       <div className={classes.buttonsDiv}>
         <Button
           className={classes.rightButton}
-          onClick={() => {
-            handleRegistration();
-          }}
+          onClick={handleRegistration}
           color="primary"
         >
           Register
@@ -344,6 +383,12 @@ function Registration() {
           Cancel
         </Button>
       </div>
+      <SnackbarAlert
+        message={message}
+        severity={severity}
+        isOpen={isSnackbarOpen}
+        close={closeSnackbar}
+      />
     </React.Fragment>
   );
 }
