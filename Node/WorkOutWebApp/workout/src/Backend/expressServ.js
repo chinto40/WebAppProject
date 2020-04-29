@@ -86,9 +86,9 @@ app.all("/test", (req, res) => {
 /*Ready */
 app.get("/GetAllWorkouts", async (req, res) => {
   let workouts = JSON.parse(await DB.getAllWorkOuts());
-  console.log("In expressServ: " + Object.keys(workouts));
+  console.log("In expressServ: " + JSON.stringify(workouts));
   //res.status = 200;
-  res.send(workouts);
+  res.send(JSON.stringify(workouts));
   //return (workouts)
   //res.end;
 });

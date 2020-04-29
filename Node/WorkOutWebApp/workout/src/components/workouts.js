@@ -27,15 +27,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Workouts = () => {
+const Workouts = async () => {
   const classes = useStyles();
   //const [numWorkouts, setNumWorkouts] = React.useState(null);
   //const [workouts, setWorkouts] = React.useState();
-  const workouts = getAllTheWorkouts();
-  const numWorkouts = Object.keys(workouts).length;
+  const workouts = await getAllTheWorkouts();
+  //const numWorkouts =
+  let i = 0;
+  workouts.forEach(element => {
+    alert('**Alert** :  Path: ' + workouts[i].Workout_ImagePath + ' -- WorkoutName: ' + workouts[i].Workout_Name);
+    i++;
+  })
+  const numWorkouts = i;
 
+  //const allWorkouts = await getAllTheWorkouts()
+  alert("In getWorkouts: " + JSON.stringify(workouts));
   /* useEffect(async () => {
-    const workouts = await getAllTheWorkouts()
+    
       .then((data) => setWorkouts(data))
       .then((data) => setNumWorkouts(Object.keys(workouts).length));
     alert("In getWorkouts: " + Object.keys(workouts));
@@ -49,15 +57,19 @@ const Workouts = () => {
   /* const [numWorkouts, setNumWorkouts] = React.useState(
     Object.keys(workouts).length
   ); */
-  alert("In Workouts: " + Object.keys(workouts));
-
-  const createCard = () => {
-    /* Object.keys(workouts).map((key) => (
+  alert("In Workouts: " + numWorkouts);
+    let x = 0;
+  /*const createCard = () => {
+     workouts.forEach(element  => {
       <NewCard
-        workoutName={workouts[key]["Workout_Name"]}
-        imgPath={workouts[key]["Workout_ImagePath"]}
+        workoutName={workouts[x]["Workout_Name"]}
+        imgPath={workouts[x]["Workout_ImagePath"]}
       />
-    )); */
+      x++;
+     }); */
+//************************************************************ */
+
+
     //let workout = workouts[key]["Workout_Name"];
     //let image = workouts[key]["Workout_ImagePath"];
     /* Object.keys(workouts[key]).map((elem) => (elem) => (
@@ -65,7 +77,7 @@ const Workouts = () => {
       (image = elem === "Workout_ImagePath" ? workouts[key][elem] : null),
     )); */
     //alert(workout + " " + image);
-  };
+ // };
 
   const CreateCard = ({ workoutName, imgPath }) => {
     //alert(workoutName, imgPath);
