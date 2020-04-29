@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MenuBar from "./menu_bar";
 import {
   Container,
@@ -21,81 +21,76 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     width: "100%",
+    heigt: "100%",
   },
   media: {
-    height: "auto",
+    height: 300,
+    width: "100%",
+    //maxHeight: 200,
+    //maxWidth: 200,
   },
 }));
 
-const Workouts = async () => {
+const Workouts = () => {
   const classes = useStyles();
-  //const [numWorkouts, setNumWorkouts] = React.useState(null);
-  //const [workouts, setWorkouts] = React.useState();
-  const workouts = await getAllTheWorkouts();
-  //const numWorkouts =
-  let i = 0;
-  workouts.forEach(element => {
-    alert('**Alert** :  Path: ' + workouts[i].Workout_ImagePath + ' -- WorkoutName: ' + workouts[i].Workout_Name);
-    i++;
-  })
-  const numWorkouts = i;
+  const [numWorkouts, setNumWorkouts] = React.useState(null);
+  const [workouts, setWorkouts] = React.useState({});
 
-  //const allWorkouts = await getAllTheWorkouts()
-  alert("In getWorkouts: " + JSON.stringify(workouts));
-  /* useEffect(async () => {
-    
-      .then((data) => setWorkouts(data))
-      .then((data) => setNumWorkouts(Object.keys(workouts).length));
-    alert("In getWorkouts: " + Object.keys(workouts));
-    return workouts;
-  }); */
+  const getWorkouts = async () => {
+    const workouts = JSON.parse(JSON.stringify(await getAllTheWorkouts()));
+    setWorkouts(workouts);
+    setNumWorkouts(Object.keys(workouts).length);
+  };
 
-  //const [workout, setWorkout] = React.useState(null);
-  //const [image, setImage] = React.useState(null);
-  //alert("After call: " + workouts);
-  //alert(Object.entries(workouts));
-  /* const [numWorkouts, setNumWorkouts] = React.useState(
-    Object.keys(workouts).length
-  ); */
-  alert("In Workouts: " + numWorkouts);
-    let x = 0;
-  /*const createCard = () => {
-     workouts.forEach(element  => {
-      <NewCard
-        workoutName={workouts[x]["Workout_Name"]}
-        imgPath={workouts[x]["Workout_ImagePath"]}
-      />
-      x++;
-     }); */
-//************************************************************ */
+  useEffect(() => {
+    getWorkouts();
+  }, []);
 
+  const images = {
+    "Arm Chop": require("./images/workouts/Arms_ArmChop.PNG"),
+    "Raised Arm Circles": require("./images/workouts/Arms_RaisedArmCircles.PNG"),
+    "Seal Jacks": require("./images/workouts/Arms_SealJacks.PNG"),
+    "Pull Ups": require("./images/workouts/Back_PullUps.PNG"),
+    Burpees: require("./images/workouts/Cardio_Burpees.PNG"),
+    Climbers: require("./images/workouts/Cardio_Climbers.PNG"),
+    "High Knee": require("./images/workouts/Cardio_HighKnee.PNG"),
+    "Jumping Jacks": require("./images/workouts/Cardio_JumpingJacks.PNG"),
+    "Side Kicks": require("./images/workouts/Cardio_SideKicks.PNG"),
+    "Chest Expansions": require("./images/workouts/Chest_ChestExpansions.PNG"),
+    "Close Grip Push Ups": require("./images/workouts/Chest_CloseGripPushUps.PNG"),
+    "Push Ups": require("./images/workouts/Chest_PushUps.PNG"),
+    "Shoulder Taps": require("./images/workouts/Chest_ShoulderTaps.PNG"),
+    Crunches: require("./images/workouts/Core_Crunches.PNG"),
+    "Flutter Kicks": require("./images/workouts/Core_FlutterKicks.PNG"),
+    "Leg Raises": require("./images/workouts/Core_LegRaises.PNG"),
+    Planks: require("./images/workouts/Core_Planks.PNG"),
+    Buttkicks: require("./images/workouts/LowerBody_Buttkicks.PNG"),
+    "Hops On The Spot": require("./images/workouts/LowerBody_HopsOnTheSpot.PNG"),
+    "Jumping Lunges": require("./images/workouts/LowerBody_JumpingLunges.PNG"),
+    "Jumping Squats": require("./images/workouts/LowerBody_JumpingSquats.PNG"),
+    Lunges: require("./images/workouts/LowerBody_Lunges.PNG"),
+    "Side To Side Lunges": require("./images/workouts/LowerBody_SideToSideLunges.PNG"),
+    Squats: require("./images/workouts/LowerBody_Squats.PNG"),
+    "Wall Sit": require("./images/workouts/LowerBody_WallSit.PNG"),
+    "Calf Raises": require("./images/workouts/LowerBody(Calfs)_CalfRaises.PNG"),
+    "Donkey Kicks": require("./images/workouts/LowerBody(Legs)_DonkeyKicks.PNG"),
+    "Overhead Punches": require("./images/workouts/Shoulder_OverheadPunches.PNG"),
+  };
 
-    //let workout = workouts[key]["Workout_Name"];
-    //let image = workouts[key]["Workout_ImagePath"];
-    /* Object.keys(workouts[key]).map((elem) => (elem) => (
-      (workout = elem === "Workout_Name" ? workouts[key][elem] : null),
-      (image = elem === "Workout_ImagePath" ? workouts[key][elem] : null),
-    )); */
-    //alert(workout + " " + image);
- // };
-
-  const CreateCard = ({ workoutName, imgPath }) => {
-    //alert(workoutName, imgPath);
+  const CreateCard = ({ workoutName }) => {
     return (
       <React.Fragment>
-        <Grid item xs marginLeft={4}>
+        <Grid item xs={3}>
           <Card className={classes.card}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                component="img"
-                image={require("./images/landing_page_1.jpg")}
-              />
-              <CardContent>
+              <CardMedia>
+                <img className={classes.media} src={images[workoutName]} />
+              </CardMedia>
+              {/* <CardContent>
                 <Typography variant="h5" component="h2">
-                  Workout Name
+                  {workoutName}
                 </Typography>
-              </CardContent>
+              </CardContent> */}
             </CardActionArea>
             <CardActions>
               <Button size="small">View Details</Button>
@@ -150,15 +145,12 @@ const Workouts = async () => {
     <Container maxWidth="lg">
       <div className={classes.root}>
         <Grid container spacing={4} justify="center">
-          {/* <Grid container item xs={24} spacing={4}>
+          <Grid container item s spacing={4}>
             {Object.keys(workouts).map((key) => (
-              <NewCard
-                workoutName={workouts[key]["Workout_Name"]}
-                imgPath={workouts[key]["Workout_ImagePath"]}
-              />
+              <CreateCard workoutName={workouts[key]["Workout_Name"]} />
             ))}
-          </Grid> */}
-          {numWorkouts > 0 ? (
+          </Grid>
+          {/* {numWorkouts > 0 ? (
             <Grid container item xs={24} spacing={4}>
               <CreateCard />
               <CreateCard />
@@ -174,7 +166,7 @@ const Workouts = async () => {
             <CreateCard />
             <CreateCard />
             <CreateCard />
-          </Grid>
+          </Grid> */}
         </Grid>
       </div>
     </Container>

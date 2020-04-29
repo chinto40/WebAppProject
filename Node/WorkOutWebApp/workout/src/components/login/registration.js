@@ -25,6 +25,7 @@ import {
   validateGender,
 } from "../../utils/validator";
 import SnackbarAlert from "../snackbar";
+import { AppContext } from "../../context";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 function Registration() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
+  const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
@@ -93,7 +95,7 @@ function Registration() {
     for (let [key, value] of Object.entries(errors)) {
       if (value === true) {
         registrationHasErrors = true;
-        alert("Registration errors");
+        //alert("Registration errors");
       }
     }
 
@@ -120,8 +122,14 @@ function Registration() {
       //console.log(registrationInfo);
       //alert(registrationInfo)
       let registerStatus = JSON.parse(await registerUser(registrationInfo));
-      alert(registerStatus);
-      setIsOpen(false);
+      if (registerStatus["status"] === true) {
+        setIsUserLoggedIn(true);
+        setIsOpen(false);
+      } else {
+        setMessage("Unable to register.");
+        setSeverity("error");
+        openSnackbar();
+      }
     }
   };
 

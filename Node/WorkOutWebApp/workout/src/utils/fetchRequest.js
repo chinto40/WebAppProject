@@ -98,9 +98,9 @@ let callHelloBackend = (name) => {
     fetch("/" + name)
       .then((data) => {
         // use fetch to connect to backend
-        alert("\n\n**Data: " + data + "\n\n**");
+        //alert("\n\n**Data: " + data + "\n\n**");
         data.json().then((data) => {
-          alert("In callHelloBackend: " + JSON.stringify(data));
+          //alert("In callHelloBackend: " + JSON.stringify(data));
           resolve(data); // IDk how to test this.. or send it as String or if it works by just returning JSON object.
         });
       })
@@ -112,7 +112,7 @@ let callHelloBackend = (name) => {
 
 export let getAllTheWorkouts = async () => {
   let workouts = await callHelloBackend("GetAllWorkouts");
-  alert("In fetch: " + JSON.stringify(workouts));
+  //alert("In fetch: " + typeof workouts);
   return workouts; // Should return a JSON obj
 };
 
