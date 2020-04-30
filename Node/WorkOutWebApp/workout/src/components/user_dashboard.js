@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   CardContent,
@@ -21,6 +21,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import { AppContext } from "../context";
+import { getSingleUserStats } from "../utils/fetchRequest";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UserDashboard() {
   const classes = useStyles();
+  const { currentUsername } = React.useContext(AppContext);
   // These are the old variables
   //const currWeight = 250;
   //const goalWeight = 220;
@@ -71,6 +74,22 @@ export default function UserDashboard() {
   const [selectedDateCalorieLog, setSelectedDateCalorieLog] = React.useState(
     new Date()
   );
+
+  const getUserInfo = async () => {
+    const stats = JSON.parse(JSON.stringify(await getSingleUserStats()));
+    console.log(Object.entries(stats));
+    setCurrWeight(stats["Current_Weight"]);
+    setGoalWeight(stats["Goal_Weight"]);
+    setCurrCaloriesLogged(stats["Current_Calories"]);
+    setGoalCalories(stats["Goal_Calories"]);
+    //setWorkouts(workouts);
+    //setNumWorkouts(Object.keys(workouts).length);
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    alert("After getUserInfo call");
+  }, []);
 
   const percentageCalories = (currCaloriesLogged / goalCalories) * 100;
 

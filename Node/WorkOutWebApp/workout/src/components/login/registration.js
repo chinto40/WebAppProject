@@ -65,6 +65,7 @@ function Registration() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
   const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
+  const { currentUsername, setCurrentUsername } = React.useContext(AppContext);
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
@@ -124,6 +125,7 @@ function Registration() {
       let registerStatus = JSON.parse(await registerUser(registrationInfo));
       if (registerStatus["status"] === true) {
         setIsUserLoggedIn(true);
+        setCurrentUsername(username);
         setIsOpen(false);
       } else {
         setMessage("Unable to register.");
