@@ -80,6 +80,8 @@ const http = require('http')
         return Prom;
    }
 
+  
+
     router.readAuthUser = (username, password) =>{
         let prom = new Promise(function(resolve, reject){  
             con.query('Select UserLogin, UserPassword FROM users',(err ,data)=>{
@@ -188,6 +190,19 @@ const http = require('http')
             //else Query Should run and insert.. 
         })
     }
+
+    router.getUserStats = (UserLogin) =>{
+        return new Promise(function(resolve,reject){
+            con.query('Select * from User_Stats WHERE UserID=?',UserLogin, (err,data)=>{
+                if(err){
+                    reject (err);
+                }
+                resolve(JSON.stringify(data[0]));
+            })
+        })
+       };
+
+    
 
     //Checking to see if a row for calories exists... 
     router.CheckCreateCalories = (UserID, date) =>{

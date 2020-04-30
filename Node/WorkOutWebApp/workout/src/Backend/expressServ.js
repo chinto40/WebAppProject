@@ -83,6 +83,13 @@ app.all("/test", (req, res) => {
   res.send({ data: "Completions" });
 });
 
+app.post('/getUserStats',async (req,res) =>{
+    let userState = await DB.getUserStats();
+    console.log("**Inside Userstats: "+ userState);
+    res.send(userState);
+})
+
+
 /*Ready */
 app.get("/GetAllWorkouts", async (req, res) => {
   let workouts = JSON.parse(await DB.getAllWorkOuts());
