@@ -64,6 +64,10 @@ export let getSingleUser = (jsonObj) => {
   //return sendServer('/getUser',jsonObj)
 };
 
+export let getSingleUserStats = (jsonObj)=>{
+  return sendServer('getUserStats',jsonObj);
+};
+
 let sendServer = (fetchName, jsonObj) => {
   return new Promise(function (resolve, reject) {
     fetch("/" + fetchName, {
