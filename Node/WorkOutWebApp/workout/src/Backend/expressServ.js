@@ -84,9 +84,13 @@ app.all("/test", (req, res) => {
 });
 
 app.post('/getUserStats',async (req,res) =>{
-    let userState = await DB.getUserStats();
-    console.log("**Inside Userstats: "+ userState);
-    res.send(userState);
+    let obj = JSON.parse(JSON.stringify(req.body));
+    //let obj = {UserLogin:'YumYum33'};
+    let user = JSON.parse(await DB.getUser(obj.UserLogin))
+    let userState = JSON.parse(await DB.getUserStats(user.UserID));
+    //console.log("**Inside Userstats: "+ JSON.stringify(userState));
+    res.send(JSON.stringify(userState));
+    res.end
 })
 
 

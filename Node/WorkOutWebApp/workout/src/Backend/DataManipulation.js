@@ -191,12 +191,13 @@ const http = require('http')
         })
     }
 
-    router.getUserStats = (UserLogin) =>{
+    router.getUserStats = (UserID) =>{
         return new Promise(function(resolve,reject){
-            con.query('Select * from User_Stats WHERE UserID=?',UserLogin, (err,data)=>{
+            con.query('Select * from User_Stats WHERE UserID=?',[UserID], (err,data)=>{
                 if(err){
                     reject (err);
                 }
+                //console.log("In database: "+JSON.stringify(data[0]));
                 resolve(JSON.stringify(data[0]));
             })
         })
@@ -251,6 +252,18 @@ const http = require('http')
         return Prom;
     }
 
+    router.getUser = (userLog)=>{
+        let Prom = new Promise(function(resolve, reject){
+            con.query('Select * from users Where UserLogin = ?',userLog,(err,data)=>{
+                if(err){
+                    reject(err)
+                    throw err
+                }
+                resolve(JSON.stringify(data[0]))
+            })
+        })
+        return Prom;
+    }
     //Returns  1 if there is at least one row returned.. Which means it exists. 
     router.checkIfWorkoutExists = (workoutName) =>{
         return new Promise(function(resolve, reject){
@@ -283,7 +296,7 @@ const http = require('http')
                 if(err){
                     reject(err);
                 }
-                console.log("Workouts: " + JSON.stringify(data))
+                //console.log("Workouts: " + JSON.stringify(data))
                 resolve(JSON.stringify(data));
             })
         })
