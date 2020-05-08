@@ -155,3 +155,22 @@ export const validateGender = (gender) => {
     return false;
   }
 };
+
+export const validateCalories = (numCal) => {
+  // must be an int between 15 and 130
+  if (numCal.trim() === "") {
+    return false;
+  }
+  numCal = Number(numCal);
+  if (
+    isFinite(numCal) &&
+    Number.isInteger(numCal) &&
+    typeof numCal === "number" &&
+    numCal > 0 &&
+    numCal <= 20000
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};

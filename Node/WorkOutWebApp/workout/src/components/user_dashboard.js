@@ -23,6 +23,7 @@ import {
 } from "@material-ui/pickers";
 import { AppContext } from "../context";
 import { getSingleUserStats } from "../utils/fetchRequest";
+import { validateCalories, validateWeight } from "../utils/validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,13 +55,6 @@ const useStyles = makeStyles((theme) => ({
 export default function UserDashboard() {
   const classes = useStyles();
   const { currentUsername } = React.useContext(AppContext);
-  // These are the old variables
-  //const currWeight = 250;
-  //const goalWeight = 220;
-  //const currCaloriesLogged = 1440;
-  //const goalCalories = 2000;
-
-  // These are the new variables
   const [currWeight, setCurrWeight] = React.useState();
   const [goalWeight, setGoalWeight] = React.useState();
   const [currCaloriesLogged, setCurrCaloriesLogged] = React.useState();
@@ -68,30 +62,47 @@ export default function UserDashboard() {
 
   const [logWeightOpen, setLogWeightOpen] = React.useState(false);
   const [logCaloriesOpen, setLogCaloriesOpen] = React.useState(false);
+
   const [selectedDateWeightLog, setSelectedDateWeightLog] = React.useState(
     new Date()
   );
+  const [weightToLog, setWeightToLog] = React.useState();
   const [selectedDateCalorieLog, setSelectedDateCalorieLog] = React.useState(
     new Date()
   );
+  const [caloriesToLog, setCaloriesToLog] = React.useState();
+
+  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+  const [message, setMessage] = React.useState(undefined);
+  const [severity, setSeverity] = React.useState("");
 
   const getUserInfo = async () => {
-    const stats = JSON.parse(JSON.stringify(await getSingleUserStats()));
-    console.log(Object.entries(stats));
+    const stats = JSON.parse(
+      await getSingleUserStats({ UserLogin: currentUsername })
+    );
+    console.log("In getUserInfo: " + Object.entries(stats));
+    alert("In getUserInfo: " + Object.keys(stats));
     setCurrWeight(stats["Current_Weight"]);
     setGoalWeight(stats["Goal_Weight"]);
     setCurrCaloriesLogged(stats["Current_Calories"]);
     setGoalCalories(stats["Goal_Calories"]);
-    //setWorkouts(workouts);
-    //setNumWorkouts(Object.keys(workouts).length);
   };
 
   useEffect(() => {
     getUserInfo();
-    alert("After getUserInfo call");
   }, []);
 
-  const percentageCalories = (currCaloriesLogged / goalCalories) * 100;
+  const [percentageCalories, setPercentageCalories] = React.useState(
+    (currCaloriesLogged / goalCalories) * 100
+  );
+
+  const openSnackbar = () => {
+    setIsSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setIsSnackbarOpen(false);
+  };
 
   const handleLogWeightOpen = () => {
     setLogWeightOpen(true);
@@ -109,12 +120,73 @@ export default function UserDashboard() {
     setLogCaloriesOpen(false);
   };
 
-  const handleCalorieDateChange = (date) => {
-    selectedDateCalorieLog(date);
+  const handleLogWeight = () => {
+    if (validateWeight(weightToLog) !== true) {
+      setMessage("Please enter valid information for all fields.");
+      setSeverity("error");
+      openSnackbar();
+    } else {
+      let logInfo = {
+        UserName: currentUsername,
+        date: selectedDateWeightLog,
+        newWeight: weightToLog,
+      };
+      /* TODO: setCurrentUserWeight needs to be updated in DataManipulation
+         parameters need to be updated to have the fields UserName, date, newWeight
+         need to create a table in database for User_Weight logs
+         need to make sure logs in User_Weight are updated in User_Stats.Current_Weight */
+      //setUsersWeight(logInfo);
+      // Will current weight automatically be updated? If not, do that here.
+      // make sure the goal calories gets updated
+      handleLogWeightClose();
+    }
   };
 
-  const handleWeightDateChange = (date) => {
-    selectedDateWeightLog(date);
+  const handleLogCalories = () => {
+    if (validateCalories(caloriesToLog) !== true) {
+      setMessage("Please enter valid information for all fields.");
+      setSeverity("error");
+      openSnackbar();
+    } else {
+      let logInfo = {
+        UserName: currentUsername,
+        date: selectedDateCalorieLog,
+        calories: caloriesToLog,
+      };
+      /* TODO: setUserCalories needs to be updated in DataManipulation
+         else branch needs to be completed
+         need to make sure logs in User_Calories are updated in User_Stats.Current_Calories */
+      //addCalorieLog(logInfo);
+      // Will current calories automatically be updated? If not, do that here.
+      // setPercentageCalories((currCaloriesLogged / goalCalories) * 100);
+      handleLogCaloriesClose();
+    }
+  };
+
+  const handleCalorieDateChange = (event) => {
+    selectedDateCalorieLog(event.target.value);
+  };
+
+  const handleCalorieLogChange = (event) => {
+    setCaloriesToLog(event.target.value);
+    if (validateCalories(event.target.value) !== true) {
+      document.getElementById("calories").style.color = "red";
+    } else {
+      document.getElementById("calories").style = classes.root;
+    }
+  };
+
+  const handleWeightDateChange = (event) => {
+    selectedDateWeightLog(event.target.value);
+  };
+
+  const handleWeightLogChange = (event) => {
+    setWeightToLog(event.target.value);
+    if (validateWeight(event.target.value) !== true) {
+      document.getElementById("weight").style.color = "red";
+    } else {
+      document.getElementById("weight").style = classes.root;
+    }
   };
 
   return (
@@ -245,17 +317,23 @@ export default function UserDashboard() {
               }}
             />
           </MuiPickersUtilsProvider>
-          <TextField id="weight" label="Weight" fullWidth></TextField>
+          <TextField
+            id="weight"
+            label="Weight"
+            value={weightToLog}
+            fullWidth
+          ></TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleLogWeightClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleLogWeightClose} color="primary">
+          <Button onClick={handleLogWeight} color="primary">
             Log
           </Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={logCaloriesOpen} close={handleLogCaloriesClose}>
         <DialogTitle id="calorie-dialog-title">Log Calories</DialogTitle>
         <DialogContent>
@@ -275,13 +353,18 @@ export default function UserDashboard() {
               }}
             />
           </MuiPickersUtilsProvider>
-          <TextField id="calories" label="Calories" fullWidth></TextField>
+          <TextField
+            id="calories"
+            label="Calories"
+            value={caloriesToLog}
+            fullWidth
+          ></TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleLogCaloriesClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleLogCaloriesClose} color="primary">
+          <Button onClick={handleLogCalories} color="primary">
             Log
           </Button>
         </DialogActions>

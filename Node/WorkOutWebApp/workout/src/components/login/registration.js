@@ -96,7 +96,6 @@ function Registration() {
     for (let [key, value] of Object.entries(errors)) {
       if (value === true) {
         registrationHasErrors = true;
-        //alert("Registration errors");
       }
     }
 
