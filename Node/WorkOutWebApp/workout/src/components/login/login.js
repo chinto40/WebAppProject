@@ -26,6 +26,7 @@ function Login() {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
   const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
+  const { currentUsername, setCurrentUsername } = React.useContext(AppContext);
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
@@ -45,12 +46,13 @@ function Login() {
     if (username.trim() != "" && password.trim() != "") {
       let loginInfo = { UserLogin: username, UserPassword: password };
       let isAuth = JSON.parse(await getUserAuthentication(loginInfo));
-      
+
       if (isAuth.status === true) {
         /* setMessage("Successfully logged in");
         setSeverity("success");
         openSnackbar(); */
         setIsUserLoggedIn(true);
+        setCurrentUsername(username);
         setIsOpen(false);
       } else {
         setMessage("Invalid credentials");
@@ -69,11 +71,11 @@ function Login() {
   };
 
   const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+    setUsername(event.target.value.trim());
   };
 
   const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+    setPassword(event.target.value.trim());
   };
 
   return (

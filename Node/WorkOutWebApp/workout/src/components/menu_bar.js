@@ -39,6 +39,7 @@ const MenuBar = (props) => {
   const classes = useStyles();
   const { isOpen, setIsOpen } = React.useContext(OnboardContext);
   const { isUserLoggedIn, setIsUserLoggedIn } = React.useContext(AppContext);
+  const { currentUsername, setCurrentUsername } = React.useContext(AppContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const avatarMenuOpen = Boolean(anchorEl);
 
@@ -60,6 +61,7 @@ const MenuBar = (props) => {
 
   const handleLogout = () => {
     setIsUserLoggedIn(false);
+    setCurrentUsername(null);
     handleAvatarMenuClose();
   };
 
@@ -131,7 +133,7 @@ const MenuBar = (props) => {
                 style={{ textDecoration: "none" }}
                 className={classes.root}
               >
-                <MenuItem onClick={handleAvatarMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleAvatarMenuClose}>Dashboard</MenuItem>
               </Link>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>

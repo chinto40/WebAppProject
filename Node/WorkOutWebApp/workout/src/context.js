@@ -22,9 +22,12 @@ export const callHelloBackend = async () => {
 
 const AppContextProvider = ({ children }) => {
   const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
+  const [currentUsername, setCurrentUsername] = React.useState(null);
   const ctx = {
     isUserLoggedIn: isUserLoggedIn,
     setIsUserLoggedIn: setIsUserLoggedIn,
+    currentUsername: currentUsername,
+    setCurrentUsername: setCurrentUsername,
   };
 
   return <AppContext.Provider value={ctx}>{children}</AppContext.Provider>;

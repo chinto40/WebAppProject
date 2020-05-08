@@ -83,6 +83,17 @@ app.all("/test", (req, res) => {
   res.send({ data: "Completions" });
 });
 
+app.post('/getUserStats',async (req,res) =>{
+    let obj = JSON.parse(JSON.stringify(req.body));
+    //let obj = {UserLogin:'YumYum33'};
+    let user = JSON.parse(await DB.getUser(obj.UserLogin))
+    let userState = JSON.parse(await DB.getUserStats(user.UserID));
+    //console.log("**Inside Userstats: "+ JSON.stringify(userState));
+    res.send(JSON.stringify(userState));
+    res.end
+})
+
+
 /*Ready */
 app.get("/GetAllWorkouts", async (req, res) => {
   let workouts = JSON.parse(await DB.getAllWorkOuts());
