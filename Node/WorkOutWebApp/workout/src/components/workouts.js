@@ -86,57 +86,12 @@ const Workouts = () => {
               <CardMedia>
                 <img className={classes.media} src={images[workoutName]} />
               </CardMedia>
-              {/* <CardContent>
-                <Typography variant="h5" component="h2">
-                  {workoutName}
-                </Typography>
-              </CardContent> */}
             </CardActionArea>
             <CardActions>
               <Button size="small">View Details</Button>
             </CardActions>
           </Card>
         </Grid>
-
-        {/* <Grid item xs>
-          <Card className={classes.card}>
-            <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                component="img"
-                image={require("./images/landing_page_1.jpg")}
-              />
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  Workout Name
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button size="small">View Details</Button>
-            </CardActions>
-          </Card>
-        </Grid>
-
-        <Grid item xs>
-          <Card className={classes.card}>
-            <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                component="img"
-                image={require("./images/landing_page_1.jpg")}
-              />
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  Workout Name
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button size="small">View Details</Button>
-            </CardActions>
-          </Card>
-        </Grid> */}
       </React.Fragment>
     );
   };
@@ -150,23 +105,6 @@ const Workouts = () => {
               <CreateCard workoutName={workouts[key]["Workout_Name"]} />
             ))}
           </Grid>
-          {/* {numWorkouts > 0 ? (
-            <Grid container item xs={24} spacing={4}>
-              <CreateCard />
-              <CreateCard />
-              <CreateCard />
-            </Grid>
-          ) : null}
-          <Grid container item xs={24} spacing={4}>
-            <CreateCard />
-            <CreateCard />
-            <CreateCard />
-          </Grid>
-          <Grid container item xs={24} spacing={4}>
-            <CreateCard />
-            <CreateCard />
-            <CreateCard />
-          </Grid> */}
         </Grid>
       </div>
     </Container>
