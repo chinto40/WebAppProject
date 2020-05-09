@@ -10,6 +10,14 @@ import {
   Button,
   Typography,
   Grid,
+  Drawer,
+  ListItem,
+  FormControlLabel,
+  Switch,
+  FormGroup,
+  ListItemIcon,
+  FormControl,
+  FormLabel,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getAllTheWorkouts } from "../utils/fetchRequest";
@@ -26,20 +34,43 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 300,
     width: "100%",
-    //maxHeight: 200,
-    //maxWidth: 200,
+  },
+  list: {
+    width: "auto",
+    padding: theme.spacing(4),
+  },
+  labels: {
+    width: "auto",
+    paddingTop: theme.spacing(4),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+  },
+  leftButton: {
+    paddingBottom: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    WebkitTextFillColor: (theme.color = "#8ABD00"),
   },
 }));
 
 const Workouts = () => {
   const classes = useStyles();
   const [numWorkouts, setNumWorkouts] = React.useState(null);
+  const [allWorkouts, setAllWorkouts] = React.useState({});
   const [workouts, setWorkouts] = React.useState({});
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const [armsSelected, setArmsSelected] = React.useState(false);
+  const [backSelected, setBackSelected] = React.useState(false);
+  const [cardioSelected, setCardioSelected] = React.useState(false);
+  const [chestSelected, setChestSelected] = React.useState(false);
+  const [coreSelected, setCoreSelected] = React.useState(false);
+  const [lowerBodySelected, setLowerBodySelected] = React.useState(false);
+  const [shouldersSelected, setShouldersSelected] = React.useState(false);
 
   const getWorkouts = async () => {
-    const workouts = JSON.parse(JSON.stringify(await getAllTheWorkouts()));
-    setWorkouts(workouts);
-    setNumWorkouts(Object.keys(workouts).length);
+    let allTheWorkouts = JSON.parse(JSON.stringify(await getAllTheWorkouts()));
+    setAllWorkouts(allTheWorkouts);
+    setNumWorkouts(Object.keys(allWorkouts).length);
   };
 
   useEffect(() => {
@@ -77,6 +108,117 @@ const Workouts = () => {
     "Overhead Punches": require("./images/workouts/Shoulder_OverheadPunches.PNG"),
   };
 
+  const handleSelectionChange = (event) => {
+    //alert("In handleSelectionChange " + event.target.checked);
+    /* let newSelected = selected;
+    newSelected[key] = event.target.checked;
+    setSelected(newSelected); */
+    switch (event.target.name) {
+      case "Arms":
+        setArmsSelected(event.target.checked);
+        break;
+      case "Back":
+        setBackSelected(event.target.checked);
+        break;
+      case "Cardio":
+        setCardioSelected(event.target.checked);
+        break;
+      case "Chest":
+        setChestSelected(event.target.checked);
+        break;
+      case "Core":
+        setCoreSelected(event.target.checked);
+        break;
+      case "Lower Body":
+        setLowerBodySelected(event.target.checked);
+        break;
+      case "Shoulders":
+        setShouldersSelected(event.target.checked);
+        break;
+    }
+  };
+
+  const toggleDrawer = () => {
+    drawerOpen ? setDrawerOpen(false) : setDrawerOpen(true);
+  };
+
+  const getWorkoutNameById = (workoutId) => {
+    let workoutName;
+    switch (workoutId) {
+      case 1:
+        workoutName = "Arms";
+        break;
+      case 2:
+        workoutName = "Back";
+        break;
+      case 3:
+        workoutName = "Cardio";
+        break;
+      case 4:
+        workoutName = "Chest";
+        break;
+      case 5:
+        workoutName = "Core";
+        break;
+      case 6:
+        workoutName = "Lower Body";
+        break;
+      case 7:
+        workoutName = "Shoulders";
+        break;
+    }
+
+    return workoutName;
+  };
+
+  const handleApplyFilters = () => {
+    /* iterate through selected object and filter workouts based
+    on the selected muscle groups*/
+    Object.filter = (obj, predicate) =>
+      Object.fromEntries(Object.entries(obj).filter(predicate));
+    let filtered = Object.filter(allWorkouts, filterWorkouts);
+    setWorkouts(filtered);
+    toggleDrawer();
+  };
+
+  const filterWorkouts = ([key, value]) => {
+    let group = getWorkoutNameById(allWorkouts[key]["Workout_GroupID"]);
+    if (getIsSelected(group) === true) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const getIsSelected = (workoutName) => {
+    let isSelected;
+    switch (workoutName) {
+      case "Arms":
+        isSelected = armsSelected;
+        break;
+      case "Back":
+        isSelected = backSelected;
+        break;
+      case "Cardio":
+        isSelected = cardioSelected;
+        break;
+      case "Chest":
+        isSelected = chestSelected;
+        break;
+      case "Core":
+        isSelected = coreSelected;
+        break;
+      case "Lower Body":
+        isSelected = lowerBodySelected;
+        break;
+      case "Shoulders":
+        isSelected = shouldersSelected;
+        break;
+    }
+
+    return isSelected;
+  };
+
   const CreateCard = ({ workoutName }) => {
     return (
       <React.Fragment>
@@ -99,13 +241,105 @@ const Workouts = () => {
   return (
     <Container maxWidth="lg">
       <div className={classes.root}>
+        <Button
+          className={classes.leftButton}
+          onClick={toggleDrawer}
+          marginLeft={0}
+        >
+          Filter
+        </Button>
         <Grid container spacing={4} justify="center">
           <Grid container item s spacing={4}>
-            {Object.keys(workouts).map((key) => (
-              <CreateCard workoutName={workouts[key]["Workout_Name"]} />
-            ))}
+            {Object.keys(workouts).length === 0
+              ? Object.keys(allWorkouts).map((key) => (
+                  <CreateCard workoutName={allWorkouts[key]["Workout_Name"]} />
+                ))
+              : Object.keys(workouts).map((key) => (
+                  <CreateCard workoutName={workouts[key]["Workout_Name"]} />
+                ))}
           </Grid>
         </Grid>
+        <Drawer
+          anchor="left"
+          className={classes.list}
+          open={drawerOpen}
+          onClose={toggleDrawer}
+        >
+          <FormLabel className={classes.labels}>Filter Options</FormLabel>
+          <FormGroup className={classes.list}>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Arms"
+                  checked={armsSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Arms"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Back"
+                  checked={backSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Back"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Cardio"
+                  checked={cardioSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Cardio"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Chest"
+                  checked={chestSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Chest"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Core"
+                  checked={coreSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Core"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Lower Body"
+                  checked={lowerBodySelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Lower Body"
+            ></FormControlLabel>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="Shoulders"
+                  checked={shouldersSelected}
+                  onChange={handleSelectionChange}
+                />
+              }
+              label="Shoulders"
+            ></FormControlLabel>
+          </FormGroup>
+          <Button onClick={handleApplyFilters}>Apply</Button>
+        </Drawer>
       </div>
     </Container>
   );
@@ -120,7 +354,7 @@ Cardio: 3
 Chest: 4
 Core: 5
 LowerBody: 6
-LowerBody(calfs): 7
-LowerBody(Legs): 8
-Shoulder: 9
+LowerBody(calfs): 6
+LowerBody(Legs): 6
+Shoulders: 7
 */
