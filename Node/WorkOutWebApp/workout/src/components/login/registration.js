@@ -104,7 +104,6 @@ function Registration() {
       setSeverity("error");
       openSnackbar();
     } else {
-      // call registration function
       let registrationInfo = {
         FirstName: firstName,
         LastName: lastName,
@@ -119,8 +118,6 @@ function Registration() {
         UserPassword: password,
       };
 
-      //console.log(registrationInfo);
-      //alert(registrationInfo)
       let registerStatus = JSON.parse(await registerUser(registrationInfo));
       if (registerStatus["status"] === true) {
         setIsUserLoggedIn(true);

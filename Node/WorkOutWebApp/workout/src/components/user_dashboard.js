@@ -75,26 +75,25 @@ export default function UserDashboard() {
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
+  const [percentageCalories, setPercentageCalories] = React.useState();
 
   const getUserInfo = async () => {
     const stats = JSON.parse(
       await getSingleUserStats({ UserLogin: currentUsername })
     );
-    console.log("In getUserInfo: " + Object.entries(stats));
-    alert("In getUserInfo: " + Object.keys(stats));
+    alert("In getUserInfo: " + stats["Current_Calories"]);
     setCurrWeight(stats["Current_Weight"]);
     setGoalWeight(stats["Goal_Weight"]);
     setCurrCaloriesLogged(stats["Current_Calories"]);
     setGoalCalories(stats["Goal_Calories"]);
+    setPercentageCalories(
+      (stats["Current_Calories"] / stats["Goal_Calories"]) * 100
+    );
   };
 
   useEffect(() => {
     getUserInfo();
   }, []);
-
-  const [percentageCalories, setPercentageCalories] = React.useState(
-    (currCaloriesLogged / goalCalories) * 100
-  );
 
   const openSnackbar = () => {
     setIsSnackbarOpen(true);
