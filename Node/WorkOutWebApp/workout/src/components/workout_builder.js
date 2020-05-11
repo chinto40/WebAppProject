@@ -17,10 +17,12 @@ import {
   CardMedia,
   Slider,
   Typography,
+  InputAdornment,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
 import { getAllTheWorkouts } from "../utils/fetchRequest";
+import { validateRepsSets } from "../utils/validator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +65,17 @@ export default function WorkoutBuilder() {
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
   const [message, setMessage] = React.useState(undefined);
   const [severity, setSeverity] = React.useState("");
+  const [numReps, setNumReps] = React.useState({});
+  const [repsError, setRepsError] = React.useState();
+  const [numSets, setNumSets] = React.useState({});
+  const [setsError, setSetsError] = React.useState();
+  const [numRepsTyped, setNumRepsTyped] = React.useState();
+  const [numSetsTyped, setNumSetsTyped] = React.useState();
+  const [
+    currWorkoutNameSelected,
+    setCurrWorkoutNameSelected,
+  ] = React.useState();
+  const [repsSetsDialogOpen, setRepsSetsDialogOpen] = React.useState(false);
 
   const images = {
     "Arm Chop": require("./images/workouts/Arms_ArmChop.PNG"),
@@ -125,6 +138,18 @@ export default function WorkoutBuilder() {
     }
   };
 
+  const handleRepsChange = (event) => {
+    let isError = validateRepsSets(event.target.value) ? false : true;
+    setRepsError(isError);
+    setNumRepsTyped(event.target.value);
+  };
+
+  const handleSetsChange = (event) => {
+    let isError = validateRepsSets(event.target.value) ? false : true;
+    setSetsError(isError);
+    setNumSetsTyped(event.target.value);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -133,17 +158,70 @@ export default function WorkoutBuilder() {
     setOpen(false);
   };
 
+  const handleRepsSetsOpen = () => {
+    setRepsSetsDialogOpen(true);
+  };
+
+  const handleRepsSetsClose = () => {
+    setNumRepsTyped("");
+    setNumSetsTyped("");
+    setCurrWorkoutNameSelected(null);
+    setRepsSetsDialogOpen(false);
+  };
+
   const handleAddWorkout = () => {
     if (workoutError) {
       setMessage("Please select a workout.");
       setSeverity("error");
       openSnackbar();
+    } else if (
+      currWorkoutNameSelected !== undefined &&
+      currWorkoutNameSelected !== null
+    ) {
+      let newSelected = workoutsSelected;
+      let index = findIndexofWorkout(currWorkoutNameSelected);
+      if (index > -1) {
+        let indexToRemove = newSelected.indexOf(index);
+        newSelected.splice(indexToRemove, 1, workoutToAdd);
+      }
+
+      setWorkoutsSelected(newSelected);
+      setWorkoutToAdd(null);
+      setCurrWorkoutNameSelected(null);
+      handleClose();
     } else {
       let newSelected = workoutsSelected;
       newSelected.push(workoutToAdd);
       setWorkoutsSelected(newSelected);
       setWorkoutToAdd(null);
       handleClose();
+    }
+  };
+
+  const findIndexofWorkout = (name) => {
+    let i = 0;
+    for (i = 0; i < allWorkouts.length; i += 1) {
+      if (allWorkouts[i]["Workout_Name"] == name) {
+        return i;
+      }
+    }
+
+    return -1;
+  };
+
+  const handleAddRepsSets = () => {
+    if (repsError || setsError) {
+      setMessage("Please enter valid info for all fields.");
+      setSeverity("error");
+      openSnackbar();
+    } else {
+      let newNumReps = numReps;
+      let newNumSets = numSets;
+      newNumReps[currWorkoutNameSelected] = numRepsTyped;
+      newNumSets[currWorkoutNameSelected] = numSetsTyped;
+      setNumReps(newNumReps);
+      setNumSets(newNumSets);
+      handleRepsSetsClose();
     }
   };
 
@@ -161,11 +239,47 @@ export default function WorkoutBuilder() {
             <Card className={classes.card}>
               <CardActionArea>
                 <CardMedia>
-                  <img className={classes.media} src={images[workoutName]} />
+                  <img
+                    className={classes.media}
+                    src={images[workoutName]}
+                    onClick={() => {
+                      setCurrWorkoutNameSelected(workoutName);
+                      handleClickOpen();
+                    }}
+                  />
                 </CardMedia>
               </CardActionArea>
               <CardActions>
-                <Button size="small">View Details</Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setCurrWorkoutNameSelected(workoutName);
+                    handleRepsSetsOpen();
+                    if (currWorkoutNameSelected in numReps) {
+                      setNumRepsTyped(numReps[currWorkoutNameSelected]);
+                    }
+                    if (currWorkoutNameSelected in numSets) {
+                      setNumSetsTyped(numSets[currWorkoutNameSelected]);
+                    }
+                  }}
+                >
+                  {numReps[workoutName] ? numReps[workoutName] : ""} reps
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setCurrWorkoutNameSelected(workoutName);
+                    handleRepsSetsOpen();
+                    if (workoutName in numReps) {
+                      setNumRepsTyped(numReps[workoutName]);
+                    }
+                    if (workoutName in numSets) {
+                      setNumSetsTyped(numSets[workoutName]);
+                    }
+                  }}
+                >
+                  {numSets[workoutName] ? numSets[workoutName] : ""} sets
+                </Button>
               </CardActions>
             </Card>
           )}
@@ -288,6 +402,54 @@ export default function WorkoutBuilder() {
             Cancel
           </Button>
           <Button onClick={handleAddWorkout} color="primary">
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        disableBackdropClick
+        disableEscapeKeyDown
+        open={repsSetsDialogOpen}
+        onClose={handleRepsSetsClose}
+      >
+        <DialogTitle>{currWorkoutNameSelected}</DialogTitle>
+        <DialogContent>
+          <form className={classes.container}>
+            <FormControl fullWidth className={classes.formControl}>
+              <InputLabel id="reps_label"></InputLabel>
+              <Input
+                id="reps"
+                label="Reps"
+                value={numRepsTyped}
+                onChange={handleRepsChange}
+                error={repsError}
+                endAdornment={
+                  <InputAdornment position="end">reps</InputAdornment>
+                }
+                onBlur={handleRepsChange}
+              />
+            </FormControl>
+            <FormControl fullWidth className={classes.formControl}>
+              <InputLabel id="sets_label"></InputLabel>
+              <Input
+                id="sets"
+                label="Sets"
+                value={numSetsTyped}
+                onChange={handleSetsChange}
+                error={setsError}
+                endAdornment={
+                  <InputAdornment position="end">sets</InputAdornment>
+                }
+                onBlur={handleSetsChange}
+              />
+            </FormControl>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRepsSetsClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddRepsSets} color="primary">
             Ok
           </Button>
         </DialogActions>

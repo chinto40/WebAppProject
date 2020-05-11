@@ -157,7 +157,6 @@ export const validateGender = (gender) => {
 };
 
 export const validateCalories = (numCal) => {
-  // must be an int between 15 and 130
   if (numCal.trim() === "") {
     return false;
   }
@@ -168,6 +167,24 @@ export const validateCalories = (numCal) => {
     typeof numCal === "number" &&
     numCal > 0 &&
     numCal <= 20000
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const validateRepsSets = (num) => {
+  if (num.trim() === "") {
+    return true;
+  }
+  num = Number(num);
+  if (
+    isFinite(num) &&
+    Number.isInteger(num) &&
+    typeof num === "number" &&
+    num >= 0 &&
+    num <= 100000
   ) {
     return true;
   } else {
