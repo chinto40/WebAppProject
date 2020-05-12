@@ -229,9 +229,9 @@ const Workouts = () => {
                 <img className={classes.media} src={images[workoutName]} />
               </CardMedia>
             </CardActionArea>
-            <CardActions>
+            {/* <CardActions>
               <Button size="small">View Details</Button>
-            </CardActions>
+            </CardActions> */}
           </Card>
         </Grid>
       </React.Fragment>
