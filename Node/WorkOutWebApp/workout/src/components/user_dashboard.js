@@ -22,7 +22,11 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { AppContext } from "../context";
-import { getSingleUserStats } from "../utils/fetchRequest";
+import {
+  getSingleUserStats,
+  addCalorieLog,
+  setUsersWeight,
+} from "../utils/fetchRequest";
 import { validateCalories, validateWeight } from "../utils/validator";
 
 const useStyles = makeStyles((theme) => ({
@@ -134,7 +138,8 @@ export default function UserDashboard() {
          parameters need to be updated to have the fields UserName, date, newWeight
          need to create a table in database for User_Weight logs
          need to make sure logs in User_Weight are updated in User_Stats.Current_Weight */
-      //setUsersWeight(logInfo);
+      setCurrWeight(logInfo.newWeight);
+      setUsersWeight(logInfo);
       // Will current weight automatically be updated? If not, do that here.
       // make sure the goal calories gets updated
       handleLogWeightClose();
@@ -155,7 +160,8 @@ export default function UserDashboard() {
       /* TODO: setUserCalories needs to be updated in DataManipulation
          else branch needs to be completed
          need to make sure logs in User_Calories are updated in User_Stats.Current_Calories */
-      //addCalorieLog(logInfo);
+      alert(logInfo.calories);
+      addCalorieLog(logInfo);
       // Will current calories automatically be updated? If not, do that here.
       // setPercentageCalories((currCaloriesLogged / goalCalories) * 100);
       handleLogCaloriesClose();
@@ -320,6 +326,7 @@ export default function UserDashboard() {
             id="weight"
             label="Weight"
             value={weightToLog}
+            onChange={handleWeightLogChange}
             fullWidth
           ></TextField>
         </DialogContent>
@@ -356,6 +363,7 @@ export default function UserDashboard() {
             id="calories"
             label="Calories"
             value={caloriesToLog}
+            onChange={handleCalorieLogChange}
             fullWidth
           ></TextField>
         </DialogContent>
