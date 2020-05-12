@@ -323,26 +323,34 @@ app.post("/getCalories", async (req, res) => {
 
 //Sets the user calories for today..
 app.post("/addCalorie", async (req, res) => {
-  
+  let t ={UserName:"xtd781",calories:100};
+  let body = JSON.parse(JSON.stringify(req.body));
+  console.log("Cal: " + body.calories)
   let date = new Date();
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
-  let body = JSON.parse(JSON.stringify(req.body));
+ //  let body = JSON.parse(JSON.stringify(req.body));
+ // let body = JSON.parse(JSON.stringify(t));
   let user = JSON.parse(await DB.getUser(body.UserName));
+  console.log("******** before check: " );
   let i = await DB.CheckCreateCalories(user.UserID, today);
+  console.log("******** after check: " );
   if (i == 0) {
     await DB.InsertUserCalories(user.UserID, today, 0);
   } //gets the caloriecounter
   //might have to get the userID.. from DB if userLogin is passed in...
   //** let UserID = await DB.getUser(body.UserLogin);
-  //let counter = await DB.getUserCalories(UserID);
+  //let counter = await DB.getUserCalories(UserID,today);
+  console.log("******** before Num: " );
+  let counter = await DB.getUserCalories(user.UserID,today);
 
-  let counter = JSON.parse(await DB.getUserCalories(body.UserName));
+  console.log("******** Num: " + counter);
   await DB.setUserCalories(user.UserID, today, (Number(counter) + Number(body.calories))); // going to get the calories + calories in datavbase...
   
-  DB.setCurrentUserCalories(user.UserID,counter + body.calories);
+  DB.setCurrentUserCalories(user.UserID,(Number(counter) + Number(body.calories)));
   res.sendStatus(200);
 });
+
 app.post("/postingTest", (req, res) => {
   //DB.insertUser(req.body);
   console.log("******** inside post request");
