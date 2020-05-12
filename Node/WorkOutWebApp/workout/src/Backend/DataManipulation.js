@@ -200,7 +200,7 @@ router.insertIntoWeightLog = (UserWight,UserID,Date) =>{
 router.setUserCalories = (UserID, date, calories) => {
   let query =
     "Update User_Calories Set Calorie_Counter = ? Where User_ID = ? and Date=?";
-  con.query(query, [calories, UserID, date], (err, data) => {
+  con.query(query, [Number(calories), UserID, date], (err, data) => {
     if (err) {
       throw err;
     }
