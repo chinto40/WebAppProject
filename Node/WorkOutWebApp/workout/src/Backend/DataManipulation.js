@@ -187,11 +187,12 @@ router.getUserCalories = (userID, date) => {
 };
 
 router.insertIntoWeightLog = (UserWight,UserID,Date) =>{
-  con.query("Insert INTO User_Weight_Log (Weight_Counter,User_ID,Date) Values (?,?,?)"
+  con.query("Insert INTO User_Weight_Log (Weight_Counter,User_ID,Date) Values (?,?,?)",
             [UserWight,UserID,Date],(err,data)=>{
               if(err){
                 throw err;
               }
+
             });
 }
 
