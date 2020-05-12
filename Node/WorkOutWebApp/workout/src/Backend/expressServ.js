@@ -152,7 +152,7 @@ app.post("/setUserWeight", async (req, res) => {
   DB.insertIntoWeightLog(userS.Current_Weight, user.UserID,today);
 
   ///UserWight,UserID,Date
-  DB.setCurrentUserWeight(user.UserID, obj.NewWeight); // or whatever the name is
+  DB.setCurrentUserWeight(user.UserID, obj.newWeight); // or whatever the name is
   res.sendStatus(200);
 });
 
