@@ -91,7 +91,9 @@ export default function UserDashboard() {
     setCurrCaloriesLogged(stats["Current_Calories"]);
     setGoalCalories(stats["Goal_Calories"]);
     setPercentageCalories(
-      (stats["Current_Calories"] / stats["Goal_Calories"]) * 100
+      Number(
+        (stats["Current_Calories"] / stats["Goal_Calories"]) * 100
+      ).toFixed(2)
     );
   };
 
@@ -160,10 +162,18 @@ export default function UserDashboard() {
       /* TODO: setUserCalories needs to be updated in DataManipulation
          else branch needs to be completed
          need to make sure logs in User_Calories are updated in User_Stats.Current_Calories */
-      alert(logInfo.calories);
+
       addCalorieLog(logInfo);
+      let newCalories = Number(currCaloriesLogged) + Number(logInfo.calories);
+      alert(newCalories);
+      setCurrCaloriesLogged(newCalories);
       // Will current calories automatically be updated? If not, do that here.
-      // setPercentageCalories((currCaloriesLogged / goalCalories) * 100);
+      alert("CurrCaloriesLogged: " + currCaloriesLogged);
+      alert("Goal Calories: " + goalCalories);
+      alert("Math: " + Number((newCalories / goalCalories) * 100).toFixed(2));
+      setPercentageCalories(
+        Number((newCalories / goalCalories) * 100).toFixed(2)
+      );
       handleLogCaloriesClose();
     }
   };
