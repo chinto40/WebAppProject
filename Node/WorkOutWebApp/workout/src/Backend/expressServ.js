@@ -336,7 +336,7 @@ app.post("/addCalorie", async (req, res) => {
   //** let UserID = await DB.getUser(body.UserLogin);
   //let counter = await DB.getUserCalories(UserID);
   let counter = await DB.getUserCalories(body.UserName);
-  await DB.setUserCalories(user.UserID, today, counter + body.Calorie_Counter); // going to get the calories + calories in datavbase...
+  await DB.setUserCalories(user.UserID, today, Number(Number(counter) + Number(body.Calorie_Counter))); // going to get the calories + calories in datavbase...
   
   DB.setCurrentUserCalories(user.UserID,counter + body.Calorie_Counter);
   res.sendStatus(200);
