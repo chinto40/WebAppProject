@@ -148,8 +148,9 @@ app.post("/setUserWeight", async (req, res) => {
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
   
-  let userS = JSON.parse(await DB.getCurrentUserWeight(user.UserID));
-  DB.insertIntoWeightLog(userS.Current_Weight, user.UserID,today);
+  //let userS = JSON.parse(await DB.getCurrentUserWeight(user.UserID));
+  
+  DB.insertIntoWeightLog(obj.newWeight, user.UserID,today);
 
   ///UserWight,UserID,Date
   DB.setCurrentUserWeight(user.UserID, obj.newWeight); // or whatever the name is
@@ -281,7 +282,8 @@ app.post("/registerUser", async (req, res) => {
       obj.User_Gender,
       obj.User_Age
     ); // Getting the userid stored in returnUser into
-
+   // let user = JSON.parse(await DB.getUser(obj.UserName));
+    DB.insertIntoWeightLog(obj.Current_Weight, getUser.UserID,today);
     // res.sendStatus(200);
     res.send(JSON.stringify({ status: true, msg: "Success!" }));
     res.end();
@@ -325,7 +327,7 @@ app.post("/addCalorie", async (req, res) => {
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
   let body = JSON.parse(JSON.stringify(req.body));
-  let user = JSON.parse(await DB.getUser(obj.UserName));
+  let user = JSON.parse(await DB.getUser(body.UserName));
   let i = await DB.CheckCreateCalories(user.UserID, today);
   if (i == 0) {
     await DB.InsertUserCalories(user.UserID, today, 0);
