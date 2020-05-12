@@ -85,7 +85,6 @@ export default function UserDashboard() {
     const stats = JSON.parse(
       await getSingleUserStats({ UserLogin: currentUsername })
     );
-    alert("In getUserInfo: " + stats["Current_Calories"]);
     setCurrWeight(stats["Current_Weight"]);
     setGoalWeight(stats["Goal_Weight"]);
     setCurrCaloriesLogged(stats["Current_Calories"]);
@@ -165,12 +164,7 @@ export default function UserDashboard() {
 
       addCalorieLog(logInfo);
       let newCalories = Number(currCaloriesLogged) + Number(logInfo.calories);
-      alert(newCalories);
       setCurrCaloriesLogged(newCalories);
-      // Will current calories automatically be updated? If not, do that here.
-      alert("CurrCaloriesLogged: " + currCaloriesLogged);
-      alert("Goal Calories: " + goalCalories);
-      alert("Math: " + Number((newCalories / goalCalories) * 100).toFixed(2));
       setPercentageCalories(
         Number((newCalories / goalCalories) * 100).toFixed(2)
       );

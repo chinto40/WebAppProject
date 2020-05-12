@@ -106,7 +106,6 @@ export const validateWeight = (weight) => {
     weight >= 0 &&
     weight < 1500
   ) {
-    //alert(Number.isInteger(weight) === true);
     return true;
   } else {
     return false;
