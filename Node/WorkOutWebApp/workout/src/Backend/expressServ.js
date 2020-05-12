@@ -335,10 +335,11 @@ app.post("/addCalorie", async (req, res) => {
   //might have to get the userID.. from DB if userLogin is passed in...
   //** let UserID = await DB.getUser(body.UserLogin);
   //let counter = await DB.getUserCalories(UserID);
-  let counter = await DB.getUserCalories(body.UserName);
-  await DB.setUserCalories(user.UserID, today, Number(Number(counter) + Number(body.Calorie_Counter))); // going to get the calories + calories in datavbase...
+
+  let counter = JSON.parse(await DB.getUserCalories(body.UserName));
+  await DB.setUserCalories(user.UserID, today, (Number(counter) + Number(body.Calorie_Counter))); // going to get the calories + calories in datavbase...
   
-  DB.setCurrentUserCalories(user.UserID,counter + body.Calorie_Counter);
+  DB.setCurrentUserCalories(user.UserID,counter + body.calories);
   res.sendStatus(200);
 });
 app.post("/postingTest", (req, res) => {
