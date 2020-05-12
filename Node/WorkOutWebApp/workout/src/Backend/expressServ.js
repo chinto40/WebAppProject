@@ -323,6 +323,7 @@ app.post("/getCalories", async (req, res) => {
 
 //Sets the user calories for today..
 app.post("/addCalorie", async (req, res) => {
+  
   let date = new Date();
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
@@ -337,7 +338,7 @@ app.post("/addCalorie", async (req, res) => {
   //let counter = await DB.getUserCalories(UserID);
 
   let counter = JSON.parse(await DB.getUserCalories(body.UserName));
-  await DB.setUserCalories(user.UserID, today, (Number(counter) + Number(body.Calorie_Counter))); // going to get the calories + calories in datavbase...
+  await DB.setUserCalories(user.UserID, today, (Number(counter) + Number(body.calories))); // going to get the calories + calories in datavbase...
   
   DB.setCurrentUserCalories(user.UserID,counter + body.calories);
   res.sendStatus(200);
