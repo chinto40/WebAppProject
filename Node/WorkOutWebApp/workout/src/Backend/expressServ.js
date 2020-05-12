@@ -140,10 +140,24 @@ app.post("/getUserWeight", async (req, res) => {
 });
 
 //Sets the Weight for the current User.
-app.post("/setUserWeight", (req, res) => {
+app.post("/setUserWeight", async (req, res) => {
   let obj = JSON.parse(JSON.stringify(req.body));
+  
+  let date = new Date();
+  let today =
+    date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
+  
+  let userS = JSON.parse(await DB.getCurrentUserWeight(obj.UserID));
+  DB.insertIntoWeightLog(userS.Current_Weight, obj.UserID,today);
+
+  ///UserWight,UserID,Date
   DB.setCurrentUserWeight(obj.UserID, obj.NewWeight); // or whatever the name is
   res.sendStatus(200);
+});
+
+app.post('/getUserWeightLog', async (req,res)=>{
+  let obj = JSON.parse(JSON.stringify(req.body));
+  return await DB.getUserWeightLog(obj.UserID);
 });
 
 //**Ready **Checks to see if the usr name is taken before
@@ -316,7 +330,9 @@ app.post("/addCalorie", async (req, res) => {
   //** let UserID = await DB.getUser(body.UserLogin);
   //let counter = await DB.getUserCalories(UserID);
   let counter = await DB.getUserCalories(body.UserName);
-  DB.setUserCalories(body.UserLogin, today, counter + body.Calorie_Counter); // going to get the calories + calories in datavbase...
+  await DB.setUserCalories(body.UserID, today, counter + body.Calorie_Counter); // going to get the calories + calories in datavbase...
+  
+  DB.setCurrentUserCalories(body.UserID,counter + body.Calorie_Counter);
   res.sendStatus(200);
 });
 app.post("/postingTest", (req, res) => {
@@ -325,3 +341,12 @@ app.post("/postingTest", (req, res) => {
   //res.send({connection: 'Connection Successful'})
   res.sendStatus(200);
 });
+
+   /* TODO: 
+        setCurrentUserWeight needs to be updated in DataManipulation
+         parameters need to be updated to have the fields UserName, date, newWeight
+         need to create a table in database for User_Weight logs
+         need to make sure logs in User_Weight are updated in User_Stats.Current_Weight */
+      //setUsersWeight(logInfo);
+      // Will current weight automatically be updated? If not, do that here.
+      // make sure the goal calories gets updated

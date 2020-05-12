@@ -170,12 +170,12 @@ router.insertIntoUserStat = (
 };
 
 //gets Calories..
-router.getUserCalories = (userName, date) => {
+router.getUserCalories = (userID, date) => {
   // dd/mm/yyyy
   let query =
-    "Select Calorie_Counter From User_Calories where UserName=? and Date=?";
+    "Select Calorie_Counter From User_Calories where User_ID=? and Date=?";
   let prom = new Promise(function (resolve, reject) {
-    con.query(query, [userName, date], (err, data) => {
+    con.query(query, [userID, date], (err, data) => {
       if (err) {
         reject(err);
         throw err;
@@ -186,11 +186,20 @@ router.getUserCalories = (userName, date) => {
   return prom;
 };
 
+router.insertIntoWeightLog = (UserWight,UserID,Date) =>{
+  con.query("Insert INTO User_Weight_Log (Calorie_Counter,User_ID,Date) Values (?,?,?)"
+            [UserWight,UserID,Date],(err,data)=>{
+              if(err){
+                throw err;
+              }
+            });
+}
+
 //IDK why i wrote this..
-router.setUserCalories = (UserName, date, calories) => {
+router.setUserCalories = (UserID, date, calories) => {
   let query =
-    "Update User_Calories Set Calorie_Counter = ? Where UserName = ? and Date=?";
-  con.query(query, [calories, UserName, date], (err, data) => {
+    "Update User_Calories Set Calorie_Counter = ? Where User_ID = ? and Date=?";
+  con.query(query, [calories, UserID, date], (err, data) => {
     if (err) {
       throw err;
     }
@@ -200,7 +209,7 @@ router.setUserCalories = (UserName, date, calories) => {
 //Insert a new User Calorie Log..
 router.InsertUserCalories = (UserID, date, calories) => {
   let query =
-    "Insert into User_Calories(Calorie_Counter, UserName, Date) VALUES (?,?,?)";
+    "Insert into User_Calories(Calorie_Counter, User_ID, Date) VALUES (?,?,?)";
   con.query(query, [calories, UserID, date], (err, data) => {
     if (err) {
       throw err;
@@ -242,7 +251,7 @@ router.getUserStats = (UserID) => {
 router.CheckCreateCalories = (UserID, date) => {
   return new Promise(function (resolve, reject) {
     con.query(
-      "Select EXISTS (Select * from User_Calories WHERE UserName = ? AND Date = ?)",
+      "Select EXISTS (Select * from User_Calories WHERE User_ID = ? AND Date = ?)",
       [UserID, date],
       (err, data) => {
         if (err) {
@@ -252,7 +261,7 @@ router.CheckCreateCalories = (UserID, date) => {
           console.log(JSON.stringify(data) + "***");
           resolve(
             data[0][
-              "EXISTS (Select * from User_Calories WHERE UserName = " +
+              "EXISTS (Select * from User_Calories WHERE User_ID = " +
                 UserID +
                 " AND Date = '" +
                 date +
@@ -381,6 +390,17 @@ router.getCurrentUserWeight = (UserID) => {
   });
 };
 
+router.getUserWeightLog = (UserID) =>{
+    return new Promise(function (resolve,reject){
+      con.query("Select * FROM User_Weight_Log WHERE User_ID = ?",UserID,(err,data)=>{
+        if(err){
+          throw err;
+        }
+        resolve(JSON.stringify(data[0]));
+      })
+    })
+}
+
 //Update the the Current weight for one user..
 router.setCurrentUserWeight = (UserID, newWeight) => {
   return new Promise(function (resolve, reject) {
@@ -388,6 +408,21 @@ router.setCurrentUserWeight = (UserID, newWeight) => {
     con.query(
       "UPDATE User_Stats SET Current_Weight=? WHERE UserID=?",
       [newWeight, UserID],
+      (err, data) => {
+        if (err) {
+          reject(err);
+        }
+      }
+    );
+  });
+};
+
+router.setCurrentUserCalories = (UserID, cal) => {
+  return new Promise(function (resolve, reject) {
+    //Dont need this.. not getting anything back just updateing my table...
+    con.query(
+      "UPDATE User_Stats SET Current_Calories=? WHERE UserID=?",
+      [cal, UserID],
       (err, data) => {
         if (err) {
           reject(err);

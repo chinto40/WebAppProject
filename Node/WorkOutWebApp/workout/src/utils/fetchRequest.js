@@ -58,6 +58,10 @@ export let addCalorieLog = (jsonObj) => {
   sendServer("addCalorie", jsonObj);
 };
 
+export let getUserWeightLog = (jsonObj)=>{
+ return  sendServer("getUserWeightLog",jsonObj);
+}
+
 export let getSingleUser = (jsonObj) => {
   // getUser - UserLogin
   sendServer("getUser", jsonObj);
