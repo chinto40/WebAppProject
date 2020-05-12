@@ -135,29 +135,31 @@ app.post("/getSingleWorkout", async (req, res) => {
 //Gets the Current User Weight...
 app.post("/getUserWeight", async (req, res) => {
   let obj = JSON.parse(JSON.stringify(req.body));
-  let currentWeight = await DB.getCurrentUserWeight(obj.UserID);
+  let user = JSON.parse(await DB.getUser(obj.UserName));
+  let currentWeight = await DB.getCurrentUserWeight(user.UserID);
   res.send(JSON.stringify({ Current_Weight: currentWeight }));
 });
 
 //Sets the Weight for the current User.
 app.post("/setUserWeight", async (req, res) => {
   let obj = JSON.parse(JSON.stringify(req.body));
-  
+  let user = JSON.parse(await DB.getUser(obj.UserName));
   let date = new Date();
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
   
-  let userS = JSON.parse(await DB.getCurrentUserWeight(obj.UserID));
-  DB.insertIntoWeightLog(userS.Current_Weight, obj.UserID,today);
+  let userS = JSON.parse(await DB.getCurrentUserWeight(user.UserID));
+  DB.insertIntoWeightLog(userS.Current_Weight, user.UserID,today);
 
   ///UserWight,UserID,Date
-  DB.setCurrentUserWeight(obj.UserID, obj.NewWeight); // or whatever the name is
+  DB.setCurrentUserWeight(user.UserID, obj.NewWeight); // or whatever the name is
   res.sendStatus(200);
 });
 
 app.post('/getUserWeightLog', async (req,res)=>{
   let obj = JSON.parse(JSON.stringify(req.body));
-  return await DB.getUserWeightLog(obj.UserID);
+  let user = JSON.parse(await DB.getUser(obj.UserName));
+  return await DB.getUserWeightLog(user.UserID);
 });
 
 //**Ready **Checks to see if the usr name is taken before
@@ -307,10 +309,11 @@ app.post("/getCalories", async (req, res) => {
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
 
   let body = JSON.parse(JSON.stringify(req.body));
-  let i = await DB.CheckCreateCalories(body.UserID, today);
+  let user = JSON.parse(await DB.getUser(obj.UserName));
+  let i = await DB.CheckCreateCalories(user.UserID, today);
   if (i == 0) {
     // if non found inserting new blank check
-    await DB.InsertUserCalories(body.UserID, today, 0);
+    await DB.InsertUserCalories(user.UserID, today, 0);
   } //gets the caloriecounter
   let calCounter = await DB.getUserCalories(body.UserLogin, today); //gets the user calorie counter for a user and the specific date.
   res.send(JSON.stringify({ Calorie_Counter: calCounter }));
@@ -322,17 +325,18 @@ app.post("/addCalorie", async (req, res) => {
   let today =
     date.getMonth() + 1 + "-" + date.getDate() + "-" + date.getFullYear(); // MM-DD-YYYY
   let body = JSON.parse(JSON.stringify(req.body));
-  let i = await DB.CheckCreateCalories(body.UserID, today);
+  let user = JSON.parse(await DB.getUser(obj.UserName));
+  let i = await DB.CheckCreateCalories(user.UserID, today);
   if (i == 0) {
-    await DB.InsertUserCalories(body.UserID, today, 0);
+    await DB.InsertUserCalories(user.UserID, today, 0);
   } //gets the caloriecounter
   //might have to get the userID.. from DB if userLogin is passed in...
   //** let UserID = await DB.getUser(body.UserLogin);
   //let counter = await DB.getUserCalories(UserID);
   let counter = await DB.getUserCalories(body.UserName);
-  await DB.setUserCalories(body.UserID, today, counter + body.Calorie_Counter); // going to get the calories + calories in datavbase...
+  await DB.setUserCalories(user.UserID, today, counter + body.Calorie_Counter); // going to get the calories + calories in datavbase...
   
-  DB.setCurrentUserCalories(body.UserID,counter + body.Calorie_Counter);
+  DB.setCurrentUserCalories(user.UserID,counter + body.Calorie_Counter);
   res.sendStatus(200);
 });
 app.post("/postingTest", (req, res) => {
